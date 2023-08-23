@@ -58,6 +58,7 @@
     }
     let page = window.location.hash.slice(2).split("/")[0];
     function setupShortcuts() {
+        page = window.location.hash.slice(2).split("/")[0];
         log(`page is: ${page}`);
         log("Location:", window.location.href);
         switch (page) {
@@ -91,14 +92,8 @@
     if (page !== "blank") {
         setupShortcuts();
     } else {
-        function callback(e) {
-            page = window.location.hash.slice(2).split("/")[0];
-            if (page !== "blank") {
-                setupShortcuts();
-            }
-            document.removeEventListener("keydown", callback);
-        }
-        document.addEventListener("keydown", callback);
+        log("Waiting for navigation...");
+        navigation.addEventListener("navigatesuccess", setupShortcuts, { once: true });
     }
     wrapper(function (e) {
         if (e.key === "F5") {
