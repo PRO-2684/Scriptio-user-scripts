@@ -39,6 +39,8 @@
     //         }
     //     }
     // };
+    // function log(...args) { console.log("[Shortcutio]", ...args ); }
+    function log(...args) {}
     function wrapper(f) {
         document.addEventListener("keydown", function (e) {
             // 输入状态不触发
@@ -50,14 +52,14 @@
             if (e.isComposing || e.keyCode === 229) {
                 return;
             }
-            console.log(`[Shortcutio] ${e.key}`);
+            log(`${e.key}`);
             f(e);
         });
     }
     let page = window.location.hash.slice(2).split("/")[0];
     function setupShortcuts() {
-        console.log(`[Shortcutio] page is: ${page}`);
-        console.log("[Shortcutio] Location:", window.location.href);
+        log(`page is: ${page}`);
+        log("Location:", window.location.href);
         switch (page) {
             case "main": {
                 wrapper(function (e) {
