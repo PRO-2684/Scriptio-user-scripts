@@ -72,6 +72,7 @@
         case "setting":
             break;
         case "tray-menu":
+        case "":
             wrapper(function (e) {
                 if (e.key === "Escape") {
                     window.close();
