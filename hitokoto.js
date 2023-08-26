@@ -3,7 +3,7 @@
     const api = "https://v1.hitokoto.cn/"; // 你可以修改这个参数，指定想要的句子类型，参考 https://developer.hitokoto.cn/sentence/#%E5%8F%A5%E5%AD%90%E7%B1%BB%E5%9E%8B-%E5%8F%82%E6%95%B0
     // const link = "https://hitokoto.cn/?uuid="; // 暂未使用
     const interval = 1000 * 5; // 刷新间隔，单位毫秒 (ms)
-    const debug = false; // 是否开启调试模式，开启后会在控制台输出日志
+    const debug = true; // 是否开启调试模式，开启后会在控制台输出日志
     const log = debug ? console.log.bind(console, "[Hitokoto]") : () => { };
 
     // 检测是否在主页
@@ -25,6 +25,7 @@
         const css = document.createElement("style");
         css.id = "scriptio-hitokoto";
         document.head.appendChild(css);
+        let timer = null;
         function shouldUpdate() {
             if (document.hidden) {
                 return false; // 页面不可见
@@ -47,7 +48,30 @@
             }
             return await trueUpdate();
         }
-        window.setInterval(update, interval);
         trueUpdate(); // 一开始就更新一次
+        function enable() {
+            if (!timer) {
+                timer = window.setInterval(update, interval);
+            }
+            css.disabled = false;
+            log("Enabled");
+        }
+        function disable() {
+            if (timer) {
+                window.clearInterval(timer);
+            }
+            timer = null;
+            css.disabled = true;
+            log("Disabled");
+        }
+        window.addEventListener("scriptio-toggle-hitokoto", (event) => {
+            log("Toggle hitokoto:", event.detail.enabled);
+            if (event.detail.enabled) {
+                enable();
+            } else {
+                disable();
+            }
+        });
+        enable();
     }
 })();

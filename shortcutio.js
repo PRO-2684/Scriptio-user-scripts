@@ -1,4 +1,4 @@
-// 添加一些常用的快捷键
+// * 添加一些常用的快捷键
 (function () {
     // const data = {
     //     "$shortcuts": {

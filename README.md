@@ -4,7 +4,7 @@
 
 ## [hitokoto](./hitokoto.js)
 
-输入框占位符显示[一言](https://hitokoto.cn)，窗口隐藏或占位符不可见时不会刷新。
+输入框占位符显示[一言](https://hitokoto.cn)，窗口隐藏或占位符不可见时不会刷新。实时响应。
 
 ![hitokoto](./images/hitokoto.jpg)
 
