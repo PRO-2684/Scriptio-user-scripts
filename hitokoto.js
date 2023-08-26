@@ -33,17 +33,21 @@
                 return placeholder && placeholder.checkVisibility();
             }
         }
-        async function update() {
-            if (!shouldUpdate()) {
-                log("Skip update");
-                return false;
-            }
+        async function trueUpdate() {
             const data = await (await fetch(api)).json();
             const hitokoto = `${data.hitokoto} —— ${data.from_who || data.from}`;
             css.textContent = `.qq-editor .ck-editor__main .ck-placeholder:before { --qq-editor-placeholder: "${hitokoto}"; }`;
             log("Update hitokoto:", hitokoto);
             return true;
         }
+        async function update() {
+            if (!shouldUpdate()) {
+                log("Skip update");
+                return false;
+            }
+            return await trueUpdate();
+        }
         window.setInterval(update, interval);
+        trueUpdate(); // 一开始就更新一次
     }
 })();
