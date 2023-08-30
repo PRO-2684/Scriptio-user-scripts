@@ -23,7 +23,7 @@
             log("Not in main page, skip");
             return;
         }
-        const sel = ".qq-editor .ck-editor__main .ck-placeholder:before";
+        const sel = `.qq-editor[style$='"";'] .ck-editor__main .ck-placeholder:before`;
         const css_word = document.createElement("style");
         css_word.id = "scriptio-hitokoto";
         css_word.textContent = sel + ' { --qq-editor-placeholder: "一言载入中..."}';
@@ -41,7 +41,7 @@
             if (document.hidden) {
                 return false; // 页面不可见
             } else { // 检测占位符是否存在及可见
-                const placeholder = document.querySelector(".qq-editor .ck-editor__main p.ck-placeholder");
+                const placeholder = document.querySelector(sel.slice(0, -7)); // 去掉 ":before"
                 return placeholder && placeholder.checkVisibility();
             }
         }
@@ -79,5 +79,6 @@
         window.addEventListener("scriptio-toggle-hitokoto", (event) => {
             toggle(event.detail.enabled);
         });
+        toggle(true);
     }
 })();
