@@ -8,6 +8,10 @@
 
 ![hitokoto](./images/hitokoto.jpg)
 
+## [img-quick-close](./img-quick-close.js)
+
+查看图片时，单击窗口任意位置 (除功能按钮外) 即可关闭图片查看器。(类似于旧版本 QQ/微信)
+
 ## [shortcutio](./shortcutio.js)
 
 添加常用快捷键，包括：
