@@ -57,43 +57,32 @@
         });
     }
     let page = window.location.hash.slice(2).split("/")[0];
-    function setupShortcuts() {
-        page = window.location.hash.slice(2).split("/")[0];
-        log(`page is: ${page}`);
-        log("Location:", window.location.href);
-        switch (page) {
-            case "main": {
-                wrapper(function (e) {
-                    const p1 = window.location.hash.slice(2).split("/")[1];
-                    if (e.key === "Enter") {
-                        if (p1 === "message") {
-                            let editor = document.querySelector(".qq-editor .ck-content");
-                            if (editor) {
-                                editor.focus();
-                            }
+    switch (page) {
+        case "main": {
+            wrapper(function (e) {
+                const p1 = window.location.hash.slice(2).split("/")[1];
+                if (e.key === "Enter") {
+                    if (p1 === "message") {
+                        let editor = document.querySelector(".qq-editor .ck-content");
+                        if (editor) {
+                            editor.focus();
                         }
                     }
-                });
-                break;
-            }
-            case "setting":
-                break;
-            case "tray-menu":
-                wrapper(function (e) {
-                    if (e.key === "Escape") {
-                        window.close();
-                    }
-                });
-                break;
-            default:
-                break;
+                }
+            });
+            break;
         }
-    }
-    if (page !== "blank") {
-        setupShortcuts();
-    } else {
-        log("Waiting for navigation...");
-        navigation.addEventListener("navigatesuccess", setupShortcuts, { once: true });
+        case "setting":
+            break;
+        case "tray-menu":
+            wrapper(function (e) {
+                if (e.key === "Escape") {
+                    window.close();
+                }
+            });
+            break;
+        default:
+            break;
     }
     wrapper(function (e) {
         if (e.key === "F5") {
