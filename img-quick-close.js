@@ -1,11 +1,11 @@
 // * 单击关闭图片查看器
-// @run-at imageViewer
+// @run-at image-viewer
 (function () {
     // 修改自: https://github.com/xiyuesaves/LiteLoaderQQNT-lite_tools/blob/45c1d7c7fab0dd4c22cc930076036063a8d204b7/src/renderer.js#L397C48-L397C48
     const appEl = document.querySelector("#app");
     const option = { attributes: false, childList: true, subtree: true };
     const setup = () => {
-        const img = document.querySelector(".main-area__image");
+        const img = document.querySelector(".main-area--image");
         const video = document.querySelector("embed");
         if (img) {
             const p = img.parentElement;
