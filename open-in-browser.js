@@ -22,7 +22,7 @@
         });
         ele.dispatchEvent(evt);
     }
-    function openWithBrowser(ele) {
+    function openWithBrowser() {
         const menu = document.querySelector("div#qContextMenu");
         if (menu && menu.children) {
             for (const child of menu.children) {
@@ -44,7 +44,7 @@
             rightClick(ele.parentElement.parentElement.parentElement.parentElement);
             let max = 10;
             const timer = window.setInterval(() => {
-                if (openWithBrowser(ele)) {
+                if (openWithBrowser()) {
                     window.clearInterval(timer);
                 }
                 max--;
