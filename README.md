@@ -22,6 +22,10 @@
     - 目前收集到的可在浏览器打开的：`com_tencent_miniapp_01` (Bilibili 分享?)
 - 若失败，则退回至左键
 
+## [plugin-icon](./plugin-icon.js)
+
+设置界面展示插件图标（若有）。
+
 ## [shortcutio](./shortcutio.js)
 
 添加常用快捷键，包括：
