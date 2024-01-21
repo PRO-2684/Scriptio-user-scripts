@@ -5,22 +5,22 @@
     const appEl = document.querySelector("#app");
     const option = { attributes: false, childList: true, subtree: true };
     const setup = () => {
-        const img = document.querySelector(".main-area--image");
+        const img = document.querySelector(".main-area--image > .main-area__content");
         const video = document.querySelector("embed");
         if (img) {
-            const p = img.parentElement;
+            // const p = img.parentElement;
             let isMove = false;
-            p.addEventListener("mousedown", (event) => {
+            img.addEventListener("mousedown", (event) => {
                 if (event.button === 0) {
                     isMove = false;
                 }
             });
-            p.addEventListener("mousemove", (event) => {
+            img.addEventListener("mousemove", (event) => {
                 if (event.button === 0) {
                     isMove = true;
                 }
             });
-            p.addEventListener("mouseup", (event) => {
+            img.addEventListener("mouseup", (event) => {
                 let rightMenu = document.querySelector("#qContextMenu");
                 if (!isMove && event.button === 0 && !rightMenu) {
                     document.querySelector(`div[aria-label="关闭"]`).click();
