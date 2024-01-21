@@ -68,6 +68,25 @@
                             editor.focus();
                         }
                     }
+                } else if (e.key === "," && e.ctrlKey) { // Ctrl + , -> 打开设置
+                    document.querySelector("div.sidebar__menu div.func-menu-more-component div.sidebar-icon")?.click();
+                    let max = 10;
+                    const timer = window.setInterval(() => {
+                        const menu = document.querySelector("div#qContextMenu.more-menu");
+                        if (menu && menu.children) {
+                            for (const child of menu.children) {
+                                if (child.textContent === "设置") {
+                                    child.click();
+                                    window.clearInterval(timer);
+                                    break;
+                                }
+                            }
+                        }
+                        max--;
+                        if (max <= 0) {
+                            window.clearInterval(timer);
+                        }
+                    }, 100);
                 }
             });
             break;
