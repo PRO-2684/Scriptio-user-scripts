@@ -8,7 +8,6 @@
         const img = document.querySelector(".main-area--image > .main-area__content");
         const video = document.querySelector("embed");
         if (img) {
-            // const p = img.parentElement;
             let isMove = false;
             img.addEventListener("mousedown", (event) => {
                 if (event.button === 0) {
