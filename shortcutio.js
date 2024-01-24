@@ -40,12 +40,13 @@
     //     }
     // };
     // function log(...args) { console.log("[Shortcutio]", ...args ); }
-    function log(...args) {}
+    function log(...args) { }
     function wrapper(f) {
         document.addEventListener("keydown", function (e) {
-            // 输入状态不触发
-            if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA"
-                || document.activeElement.getAttribute("contenteditable") === "true") {
+            // 输入状态并且未使用修饰键下不触发
+            const ele = document.activeElement;
+            if ((ele.tagName === "INPUT" || ele.tagName === "TEXTAREA" || ele.getAttribute("contenteditable") === "true")
+                && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
                 return;
             }
             // 输入法下不触发
