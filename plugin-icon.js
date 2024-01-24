@@ -19,7 +19,7 @@
     }
     function setUp() {
         const navItems = document.querySelectorAll("div.setting-tab > div.nav-bar > div.nav-item.liteloader");
-        if (navItems.length < pluginCount + 1) {
+        if (navItems.length < pluginCount) {
             return false;
         }
         navItems.forEach((navItem) => {
