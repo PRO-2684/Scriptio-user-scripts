@@ -63,8 +63,11 @@
         css_trans.disabled = !enabled;
         log("Toggle hitokoto:", enabled);
     }
-    window.addEventListener("scriptio-toggle-hitokoto", (event) => {
-        toggle(event.detail.enabled);
+    window.addEventListener("scriptio-toggle", (event) => {
+        const path = event.detail.path;
+        const self = "hitokoto.js";
+        if (path === self || path.endsWith("/" + self))
+            toggle(event.detail.enabled);
     });
     toggle(true);
 })();
