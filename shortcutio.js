@@ -1,5 +1,6 @@
-// * 添加一些常用的快捷键
+// 添加一些常用的快捷键
 (function () {
+    const self = document.currentScript?.getAttribute("data-scriptio-script");
     // const data = {
     //     "$shortcuts": {
     //         "F5": () => { window.location.reload(); },
@@ -42,11 +43,12 @@
     // function log(...args) { console.log("[Shortcutio]", ...args ); }
     function log(...args) { }
     function wrapper(f) {
-        document.addEventListener("keydown", function (e) {
+        let listening = false;
+        function onKeyDown (e) {
             // 输入状态并且未使用修饰键下不触发
             const ele = document.activeElement;
             if ((ele.tagName === "INPUT" || ele.tagName === "TEXTAREA" || ele.getAttribute("contenteditable") === "true")
-                && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
+                && !e.ctrlKey && !e.altKey && !e.metaKey) {
                 return;
             }
             // 输入法下不触发
@@ -55,7 +57,22 @@
             }
             log(`${e.key}`);
             f(e);
+        }
+        function toggle(enabled) {
+            if (enabled && !listening) {
+                document.addEventListener("keydown", onKeyDown);
+            } else if (!enabled && listening) {
+                document.removeEventListener("keydown", onKeyDown);
+            }
+            listening = enabled;
+        }
+        window.addEventListener("scriptio-toggle", (event) => {
+            const path = event.detail.path;
+            if (path === self) {
+                toggle(event.detail.enabled);
+            }
         });
+        toggle(true);
     }
     let page = window.location.hash.slice(2).split("/")[0];
     switch (page) {
