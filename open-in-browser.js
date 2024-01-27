@@ -1,6 +1,7 @@
-// * 小程序若可行则浏览器打开
+// 小程序若可行则浏览器打开
 // @run-at main
 (function () {
+    const self = document.currentScript?.getAttribute("data-scriptio-script");
     const canOpenInBrowser = ["com_tencent_miniapp_01"];
     function randomPos(ele) {
         const rect = ele.getBoundingClientRect();
@@ -57,5 +58,21 @@
             }, 100);
         }
     }
-    document.addEventListener("click", handleClick, {capture: true});
+    let listening = false;
+    function toggle(enabled) {
+        if (enabled && !listening) {
+            document.addEventListener("click", handleClick, {capture: true});
+        } else if (!enabled && listening) {
+            document.removeEventListener("click", handleClick, {capture: true});
+        }
+        listening = enabled;
+    }
+    window.addEventListener("scriptio-toggle", (event) => {
+        const path = event.detail.path;
+        console.log(path);
+        if (path === self) {
+            toggle(event.detail.enabled);
+        }
+    });
+    toggle(true);
 })();
