@@ -1,5 +1,5 @@
 // 获取一言，展现在输入框占位符上
-// @run-at main
+// @run-at main, chat
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
     // 参数
