@@ -3,7 +3,16 @@
     const self = document.currentScript?.getAttribute("data-scriptio-script");
     // function log(...args) { console.log("[Shortcutio]", ...args ); }
     function log(...args) { }
-    function wrapper(f) {
+    function scriptioWrapper(toggleFunc) {
+        window.addEventListener("scriptio-toggle", (event) => {
+            const path = event.detail.path;
+            if (path === self) {
+                toggleFunc(event.detail.enabled);
+            }
+        });
+        toggleFunc(true);
+    }
+    function keyDownWrapper(f) {
         let listening = false;
         function onKeyDown (e) {
             // 输入状态并且未使用修饰键下不触发
@@ -27,18 +36,12 @@
             }
             listening = enabled;
         }
-        window.addEventListener("scriptio-toggle", (event) => {
-            const path = event.detail.path;
-            if (path === self) {
-                toggle(event.detail.enabled);
-            }
-        });
-        toggle(true);
+        scriptioWrapper(toggle);
     }
     let page = window.location.hash.slice(2).split("/")[0];
     switch (page) {
         case "main": {
-            wrapper(function (e) {
+            keyDownWrapper(function (e) {
                 const p1 = window.location.hash.slice(2).split("/")[1];
                 if (e.key === "Enter") {
                     if (p1 === "message") {
@@ -73,8 +76,8 @@
                         return;
                     }
                     const prop = vue.config.globalProperties;
-                    const fullPath = prop.$route.fullPath;
                     const router = prop.$router;
+                    const fullPath = prop.$route.fullPath;
                     const paths = ["/main/message", "/main/contact/profile"]
                     const idx = paths.indexOf(fullPath);
                     if (idx >= 0) {
@@ -90,7 +93,7 @@
         case "setting":
             break;
         case "tray-menu":
-            wrapper(function (e) {
+            keyDownWrapper(function (e) {
                 if (e.key === "Escape") {
                     window.close();
                 }
@@ -99,9 +102,32 @@
         default:
             break;
     }
-    wrapper(function (e) {
+    keyDownWrapper(function (e) {
         if (e.key === "F5") {
             window.location.reload();
         }
     });
+    function handleMouseDown(e) {
+        log("mouse down", e.button);
+        if (e.button === 3 || e.button === 4) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (e.button === 3) {
+                window.history.back();
+            } else {
+                window.history.forward();
+            }
+            return false;
+        }
+    }
+    let mouseListening = false;
+    function toggleMouseDown(enabled) {
+        if (enabled && !mouseListening) {
+            document.addEventListener("mousedown", handleMouseDown, { capture: true });
+        } else if (!enabled && mouseListening) {
+            document.removeEventListener("mousedown", handleMouseDown, { capture: true });
+        }
+        mouseListening = enabled;
+    }
+    scriptioWrapper(toggleMouseDown);
 })();
