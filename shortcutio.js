@@ -1,45 +1,6 @@
 // 添加一些常用的快捷键
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
-    // const data = {
-    //     "$shortcuts": {
-    //         "F5": () => { window.location.reload(); },
-    //     },
-    //     "tray-menu": {
-    //         "$shortcuts": {
-    //             "Escape": () => { window.close(); },
-    //         }
-    //     },
-    //     "main": {
-    //         "$shortcuts": {},
-    //         "message": {
-    //             "$shortcuts": {
-    //                 "Enter": () => {
-    //                     let editor = document.querySelector(".qq-editor .ck-content");
-    //                     if (editor) {
-    //                         editor.focus();
-    //                     }
-    //                 },
-    //             }
-    //         },
-    //         "contact": {
-    //             "$shortcuts": {},
-    //             "profile": {
-    //                 "$shortcuts": {}
-    //             },
-    //             "notify": {
-    //                 "$shortcuts": {}
-    //             }
-    //         },
-    //     },
-    //     "setting": {
-    //         "$shortcuts": {},
-    //         "settings": {
-    //             "$shortcuts": {},
-    //             // ...
-    //         }
-    //     }
-    // };
     // function log(...args) { console.log("[Shortcutio]", ...args ); }
     function log(...args) { }
     function wrapper(f) {
@@ -105,6 +66,23 @@
                             window.clearInterval(timer);
                         }
                     }, 100);
+                } else if (e.key === "Tab" && e.ctrlKey) { // Ctrl + Tab -> 聊天与联系人界面切换
+                    const vue = document.querySelector("#app")?.__vue_app__;
+                    if (!vue) {
+                        log("VUE not found");
+                        return;
+                    }
+                    const prop = vue.config.globalProperties;
+                    const fullPath = prop.$route.fullPath;
+                    const router = prop.$router;
+                    const paths = ["/main/message", "/main/contact/profile"]
+                    const idx = paths.indexOf(fullPath);
+                    if (idx >= 0) {
+                        const next = (idx + 1) % paths.length;
+                        router.push(paths[next]);
+                    } else {
+                        log("Unknown path:", fullPath);
+                    }
                 }
             });
             break;
