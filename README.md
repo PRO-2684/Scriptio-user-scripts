@@ -46,4 +46,6 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 
 ## [show-time](./show-time.js)
 
-消息鼠标悬停显示详细时间，需要 hook-vue.js 的支持。若需要在消息后直接显示时间，请添加 [`show-time.css`](https://github.com/PRO-2684/Transitio-user-css/#show-time) (开发中)。
+消息后显示时间，鼠标悬停显示详细时间，需要 hook-vue.js 的支持。
+
+![show-time](./images/show-time.jpg)
