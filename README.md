@@ -8,6 +8,12 @@
 
 ![hitokoto](./images/hitokoto.jpg)
 
+## [hook-vue](./hook-vue.js)
+
+Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vue 实例。使用方法见代码注释。
+
+**注意：可能与其他插件的类似功能冲突！**
+
 ## [img-quick-close](./img-quick-close.js)
 
 查看图片时，单击窗口任意位置 (除功能按钮外) 即可关闭图片查看器。(类似于旧版本 QQ/微信)
@@ -37,3 +43,7 @@
 - `Ctrl+Tab` 聊天与联系人界面切换
 
 同时，修复鼠标侧键，从而进行前进与后退。（`button` 为 3 时，模拟后退；为 4 时，模拟前进）
+
+## [show-time](./show-time.js)
+
+消息鼠标悬停显示详细时间，需要 hook-vue.js 的支持。若需要在消息后直接显示时间，请添加 [`show-time.css`](https://github.com/PRO-2684/Transitio-user-css/#show-time) (开发中)。
