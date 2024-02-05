@@ -1,5 +1,5 @@
 // * 消息显示时间，需要 hook-vue.js 的支持
-// @run-at main, chat
+// @run-at main, chat, forward
 
 (function () {
     function main() {
