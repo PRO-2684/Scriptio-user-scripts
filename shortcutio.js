@@ -38,7 +38,7 @@
         }
         scriptioWrapper(toggle);
     }
-    let page = window.location.hash.slice(2).split("/")[0];
+    const page = window.location.hash.slice(2).split("/")[0];
     switch (page) {
         case "main": {
             keyDownWrapper(function (e) {
