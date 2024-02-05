@@ -46,6 +46,6 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 
 ## [show-time](./show-time.js)
 
-消息后显示时间，鼠标悬停显示详细时间，需要 hook-vue.js 的支持。
+消息后显示时间，鼠标悬停显示详细时间，需要 hook-vue.js 的支持。*关闭后再次打开可能需要切换一次聊天窗口才能生效。*
 
 ![show-time](./images/show-time.jpg)
