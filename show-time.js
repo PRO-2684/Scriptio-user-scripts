@@ -28,8 +28,9 @@
         .message .message-time {
             align-self: end;
             color: var(--on_bg_text);
-            font-size: var(--font_size_2);
-            margin: 0 0.5em;
+            opacity: 0.6;
+            font-size: var(--font_size_1);
+            margin: 0 1em;
         }
         .message .gray-tip-message .message-time::before {
             content: "(";
