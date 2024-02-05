@@ -16,19 +16,26 @@
         timeEl.classList.add("message-time");
         timeEl.textContent = simpleTime;
         timeEl.title = fullTime;
+        const parent = el.querySelector(".message-content__wrapper") || el.querySelector(".gray-tip-content.gray-tip-element");
         const position = el.querySelector(".message-container--align-right") ? "afterbegin" : "beforeend";
-        el.querySelector(".message-content__wrapper")?.insertAdjacentElement(position, timeEl);
+        parent?.insertAdjacentElement(position, timeEl);
     }
     function enable() {
         if (enabled) return;
         const style = document.createElement("style");
         style.id = "scriptio-show-time";
         style.textContent = `
-        .message .message-content__wrapper .message-time {
+        .message .message-time {
             align-self: end;
             color: var(--on_bg_text);
             font-size: var(--font_size_2);
             margin: 0 0.5em;
+        }
+        .message .gray-tip-message .message-time::before {
+            content: "(";
+        }
+        .message .gray-tip-message .message-time::after {
+            content: ")";
         }`;
         document.head.appendChild(style);
         window.__VUE_MOUNT__.push(addTime);
