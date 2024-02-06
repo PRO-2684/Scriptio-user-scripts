@@ -18,6 +18,10 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 
 查看图片时，单击窗口任意位置 (除功能按钮外) 即可关闭图片查看器。(类似于旧版本 QQ/微信)
 
+## [msg-record-enhance](./msg-record-enhance.js)
+
+查看转发的聊天记录中已知的和引用消息发送者 QQ，需要 hook-vue.js 的支持。鼠标悬浮在头像/引用消息的发送者昵称上时显示 QQ 号，双击可复制。*关闭/打开需要重新进入聊天记录才能生效。*
+
 ## [open-in-browser](./open-in-browser.js)
 
 小程序若可行则浏览器打开。
@@ -46,6 +50,6 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 
 ## [show-time](./show-time.js)
 
-消息后显示时间，鼠标悬停显示详细时间，需要 hook-vue.js 的支持。*关闭后再次打开可能需要切换一次聊天窗口才能生效。*
+消息后显示时间，鼠标悬停显示详细时间，需要 hook-vue.js 的支持。*关闭/打开可能需要切换一次聊天窗口/上下滚动几屏才能生效。*
 
 ![show-time](./images/show-time.jpg)
