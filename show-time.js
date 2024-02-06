@@ -1,4 +1,4 @@
-// 消息显示时间，需要 hook-vue.js 的支持
+// 消息显示时间，鼠标悬停显示详细时间，双击复制时间戳，需要 hook-vue.js 的支持
 // @run-at main, chat, forward
 
 (function () {
@@ -8,7 +8,7 @@
         const el = component?.vnode?.el;
         if (!el?.classList?.contains("message")) return;
         const props = component.props;
-        const timestamp = props?.msgRecord?.msgTime * 1000 || 0;
+        const timestamp = props?.msgRecord?.msgTime * 1000 || 0; // String implicitly converted to number
         const date = new Date(timestamp);
         const fullTime = timestamp ? date.toLocaleString("zh-CN") : "未知时间";
         const simpleTime = timestamp ? date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "未知时间";
@@ -19,6 +19,9 @@
         const parent = el.querySelector(".message-content__wrapper") || el.querySelector(".gray-tip-content.gray-tip-element");
         const position = el.querySelector(".message-container--align-right") ? "afterbegin" : "beforeend";
         parent?.insertAdjacentElement(position, timeEl);
+        timeEl.addEventListener("dblclick", () => {
+            navigator?.clipboard?.writeText(String(timestamp));
+        });
     }
     function enable() {
         if (enabled) return;
