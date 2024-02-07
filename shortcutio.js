@@ -78,8 +78,13 @@
                     const prop = vue.config.globalProperties;
                     const router = prop.$router;
                     const fullPath = prop.$route.fullPath;
-                    const paths = ["/main/message", "/main/contact/profile"]
-                    const idx = paths.indexOf(fullPath);
+                    const paths = ["/main/message", "/main/contact/"]
+                    let idx;
+                    for (idx = 0; idx < paths.length; idx++) {
+                        if (fullPath.startsWith(paths[idx])) {
+                            break;
+                        }
+                    }
                     if (idx >= 0) {
                         const next = (idx + 1) % paths.length;
                         router.push(paths[next]);
