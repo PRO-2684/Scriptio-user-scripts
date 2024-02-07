@@ -41,34 +41,75 @@
     const page = window.location.hash.slice(2).split("/")[0];
     switch (page) {
         case "main": {
-            keyDownWrapper(function (e) {
-                const p1 = window.location.hash.slice(2).split("/")[1];
-                if (e.key === "Enter") {
-                    if (p1 === "message") {
-                        let editor = document.querySelector(".qq-editor .ck-content");
-                        if (editor) {
-                            editor.focus();
-                        }
-                    }
-                } else if (e.key === "," && e.ctrlKey) { // Ctrl + , -> 打开设置
-                    document.querySelector("div.sidebar__menu div.func-menu-more-component div.sidebar-icon")?.click();
-                    let max = 10;
+            function clickMenuButton() {
+                const menu = document.querySelector("div.sidebar__menu div.func-menu-more-component div.sidebar-icon");
+                if (menu) {
+                    menu.click();
+                    return true;
+                } else {
+                    log("Menu not found");
+                    return false
+                }
+            }
+            function getSettingsButton() {
+                if (!clickMenuButton()) {
+                    return Promise.resolve(null);
+                }
+                let max = 10;
+                return new Promise((resolve) => {
                     const timer = window.setInterval(() => {
                         const menu = document.querySelector("div#qContextMenu.more-menu");
                         if (menu && menu.children) {
                             for (const child of menu.children) {
                                 if (child.textContent === "设置") {
-                                    child.click();
                                     window.clearInterval(timer);
-                                    break;
+                                    log("Settings button found");
+                                    resolve(child);
+                                    return;
                                 }
                             }
                         }
                         max--;
                         if (max <= 0) {
                             window.clearInterval(timer);
+                            resolve(null);
                         }
                     }, 100);
+                });
+            }
+            function openSettingsLegacy() {
+                log("Open settings (legacy)");
+                getSettingsButton().then((button) => { button?.click(); });
+            }
+            let openSettingsInternal = null;
+            function onVueHooked() {
+                getSettingsButton().then((button) => {
+                    log("Vue hooked");
+                    const onClick = button?.__VUE__[0]?.vnode?.props?.onClick;
+                    if (onClick) {
+                        log("Got reference to onClick function")
+                        openSettingsInternal = () => {
+                            log("Open settings (internal)");
+                            onClick();
+                        }
+                    }
+                    clickMenuButton(); // 关闭菜单
+                });
+            }
+            if (window.__VUE_ELEMENTS__ && window.__VUE_MOUNT__ && window.__VUE_UNMOUNT__) {
+                onVueHooked();
+            } else {
+                window.addEventListener("vue-hooked", onVueHooked, { once: true });
+            }
+            keyDownWrapper(function (e) {
+                const p1 = window.location.hash.slice(2).split("/")[1];
+                if (e.key === "Enter") {
+                    if (p1 === "message") {
+                        const editor = document.querySelector(".qq-editor .ck-content");
+                        editor?.focus();
+                    }
+                } else if (e.key === "," && e.ctrlKey) { // Ctrl + , -> 打开设置
+                    (openSettingsInternal || openSettingsLegacy)();
                 } else if (e.key === "Tab" && e.ctrlKey) { // Ctrl + Tab -> 聊天与联系人界面切换
                     const current = location.hash;
                     const paths = ["#/main/message", "#/main/contact/"]
