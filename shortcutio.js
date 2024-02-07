@@ -70,26 +70,19 @@
                         }
                     }, 100);
                 } else if (e.key === "Tab" && e.ctrlKey) { // Ctrl + Tab -> 聊天与联系人界面切换
-                    const vue = document.querySelector("#app")?.__vue_app__;
-                    if (!vue) {
-                        log("VUE not found");
-                        return;
-                    }
-                    const prop = vue.config.globalProperties;
-                    const router = prop.$router;
-                    const fullPath = prop.$route.fullPath;
-                    const paths = ["/main/message", "/main/contact/"]
+                    const current = location.hash;
+                    const paths = ["#/main/message", "#/main/contact/"]
                     let idx;
                     for (idx = 0; idx < paths.length; idx++) {
-                        if (fullPath.startsWith(paths[idx])) {
+                        if (current.startsWith(paths[idx])) {
                             break;
                         }
                     }
                     if (idx >= 0) {
                         const next = (idx + 1) % paths.length;
-                        router.push(paths[next]);
+                        location.hash = paths[next];
                     } else {
-                        log("Unknown path:", fullPath);
+                        log("Unknown path:", current);
                     }
                 }
             });
