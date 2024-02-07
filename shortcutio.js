@@ -96,7 +96,7 @@
                     clickMenuButton(); // 关闭菜单
                 });
             }
-            if (window.__VUE_ELEMENTS__ && window.__VUE_MOUNT__ && window.__VUE_UNMOUNT__) {
+            if (window.__VUE_ELEMENTS__) {
                 onVueHooked();
             } else {
                 window.addEventListener("vue-hooked", onVueHooked, { once: true });
