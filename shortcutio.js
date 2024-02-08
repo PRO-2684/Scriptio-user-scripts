@@ -48,9 +48,10 @@
                     return true;
                 } else {
                     log("Menu not found");
-                    return false
+                    return false;
                 }
             }
+            let openSettingsInternal = null;
             function getSettingsButton() {
                 if (!clickMenuButton()) {
                     return Promise.resolve(null);
@@ -64,6 +65,14 @@
                                 if (child.textContent === "设置") {
                                     window.clearInterval(timer);
                                     log("Settings button found");
+                                    const onClick = child?.__VUE__[0]?.vnode?.props?.onClick;
+                                    if (onClick) {
+                                        log("Got reference to onClick function")
+                                        openSettingsInternal = () => {
+                                            log("Open settings (internal)");
+                                            onClick();
+                                        }
+                                    }
                                     resolve(child);
                                     return;
                                 }
@@ -81,18 +90,9 @@
                 log("Open settings (legacy)");
                 getSettingsButton().then((button) => { button?.click(); });
             }
-            let openSettingsInternal = null;
             function onVueHooked() {
+                log("Vue hooked");
                 getSettingsButton().then((button) => {
-                    log("Vue hooked");
-                    const onClick = button?.__VUE__[0]?.vnode?.props?.onClick;
-                    if (onClick) {
-                        log("Got reference to onClick function")
-                        openSettingsInternal = () => {
-                            log("Open settings (internal)");
-                            onClick();
-                        }
-                    }
                     clickMenuButton(); // 关闭菜单
                 });
             }
