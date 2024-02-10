@@ -1,5 +1,5 @@
 // 消息显示时间，鼠标悬停显示详细时间，双击复制时间戳，需要 hook-vue.js 的支持
-// @run-at main, chat, forward
+// @run-at main, chat, record, forward
 
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
