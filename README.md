@@ -10,7 +10,52 @@
 
 ## [hook-vue](./hook-vue.js)
 
-Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vue 实例。使用方法见代码注释。
+Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vue 实例，使用方法见代码注释。依赖此脚本的常用代码模板：
+
+```javascript
+// <脚本的简要说明>，需要 hook-vue.js 的支持
+// @run-at <脚本启用页面>
+
+(function () {
+    const self = document.currentScript?.getAttribute("data-scriptio-script");
+    let enabled = false;
+    function process(component) {
+        const el = component?.vnode?.el;
+        // if (!el?.classList?.contains("message")) return; // 若仅需处理消息，可使用此行
+        // <处理逻辑>
+    }
+    function enable() {
+        if (enabled) return;
+        window.__VUE_MOUNT__.push(process);
+        // <启用脚本的额外工作>
+        enabled = true;
+    }
+    function disable() {
+        if (!enabled) return;
+        const index = window.__VUE_MOUNT__.indexOf(process);
+        if (index > -1) {
+            window.__VUE_MOUNT__.splice(index, 1);
+        }
+        // <禁用脚本的额外工作>
+        enabled = false;
+    }
+    if (window.__VUE_ELEMENTS__) {
+        enable();
+    } else {
+        window.addEventListener("vue-hooked", enable, { once: true });
+    }
+    window.addEventListener("scriptio-toggle", (event) => {
+        const path = event.detail.path;
+        if (path === self) {
+            if (event.detail.enabled) {
+                enable();
+            } else {
+                disable();
+            }
+        }
+    });
+})();
+```
 
 **注意：可能与其他插件的类似功能冲突！**
 
