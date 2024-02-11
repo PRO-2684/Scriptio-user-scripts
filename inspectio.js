@@ -1,5 +1,5 @@
-// 添加各类提示信息，功能细节详见 README，需要 hook-vue.js 的支持
-// @run-at main, chat, record
+// 添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
+// @run-at main, chat, record, forward
 
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
@@ -23,6 +23,21 @@
             return uin; // Fall back to uin if not found
         }
         // TODO: Also try to find in `common_Contact_buddy`
+    }
+    function ctrlToCopy(el) {
+        if (!el || !el.title) return;
+        el.addEventListener("click", (e) => {
+            if (e.ctrlKey) {
+                e.stopImmediatePropagation();
+                navigator?.clipboard?.writeText(el.title);
+            }
+        }, { capture: true });
+    }
+    function setTip(el, tip) {
+        if (el && tip) {
+            el.title = tip;
+            ctrlToCopy(el);
+        }
     }
     function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements`
         if (!msgRecEl) return "";
@@ -48,6 +63,18 @@
                     return dimension;
                 }
             }
+            case 3: { // fileElement
+                const data = msgRecEl.fileElement;
+                const optionalDimension = data.picWidth && data.picHeight ? ` (${data.picWidth} x ${data.picHeight})` : "";
+                const optionalPath = data.filePath ? `\nPath: ${data.filePath}` : "";
+                const tip = `${data.fileName}${optionalDimension}\nSize: ${data.fileSize} Bytes\nMD5: ${data.fileMd5.toUpperCase()}${optionalPath}`;
+                setTip(el.querySelector(".file-element"), tip);
+                const fnameEl = el.querySelector(".file-element .file-name");
+                if (fnameEl) {
+                    fnameEl.removeAttribute("title");
+                }
+                return "";
+            }
             case 4: { // pttElement
                 const data = msgRecEl.pttElement;
                 return `${data.fileName} (${data.duration}s, ${data.fileSize} Bytes)`;
@@ -56,6 +83,14 @@
                 const data = msgRecEl.videoElement;
                 return `${data.fileName} (${data.fileTime}s, ${data.fileSize} Bytes)`;
             }
+            case 6: { // faceElement
+                const data = msgRecEl.faceElement;
+                switch (data.faceType) {
+                    default: {
+                        return data.faceText || "";
+                    }
+                }
+            }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
                 switch (data.subElementType) {
@@ -63,12 +98,13 @@
                         const subData = data.revokeElement;
                         const sender = `${uinToQQ(subData.origMsgSenderUid)} (${subData.origMsgSenderMemRemark || subData.origMsgSenderNick})`;
                         const operator = `${uinToQQ(subData.operatorUid)} (${subData.operatorMemRemark || subData.operatorNick})`;
-                        el.querySelector(".gray-tip-message").title = `发送者: ${sender}\n撤回者: ${operator}`;
+                        const msg = el.querySelector(".gray-tip-message");
+                        setTip(msg, `发送者: ${sender}\n撤回者: ${operator}`);
                         return "";
                     }
                     case 17: { // jsonGrayTipElement
                         const subData = data.jsonGrayTipElement;
-                        const raw = data.jsonGrayTipElement.jsonStr;
+                        const raw = subData.jsonStr;
                         const parts = JSON.parse(raw)?.items;
                         if (!parts) return "";
                         const queue = [];
@@ -87,7 +123,7 @@
                             if (text === tuple[0]) {
                                 const span = document.createElement("span");
                                 span.textContent = text;
-                                span.title = `${tuple[1]} (${text})`;
+                                setTip(span, `${tuple[1]} (${text})`);
                                 node.replaceWith(span);
                                 queue.shift();
                             }
@@ -146,7 +182,8 @@
                 const desc = getDesc(msgRecEl, el);
                 const dom = container?.children[i];
                 if (desc && dom) {
-                    dom.title = desc;
+                    // dom.title = desc;
+                    setTip(dom, desc);
                 }
             }
         }
