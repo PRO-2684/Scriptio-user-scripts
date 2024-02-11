@@ -72,10 +72,16 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 - 视频文件名、时长以及占用大小
 - 红包领取信息
 - 语音消息的时长以及占用大小
-- 小程序的摘要（仅测试了 Bilibili）
+- 小程序/卡片分享的摘要
 - 各类灰字提示中的 QQ 号
     - 撤回提示
     - 红包提示
+
+## [link-preview](./link-preview.js)
+
+链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要 hook-vue.js 的支持。*关闭/打开需要切换一次聊天窗口/重新进入聊天记录才能生效。*
+
+![link-preview](./images/link-preview.jpg)
 
 ## [msg-record-enhance](./msg-record-enhance.js)
 
