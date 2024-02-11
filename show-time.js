@@ -57,7 +57,7 @@
         times.forEach((time) => time.remove());
         enabled = false;
     }
-    if (window.__VUE_ELEMENTS__) {
+    if (window.__VUE_MOUNT__) {
         enable();
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });

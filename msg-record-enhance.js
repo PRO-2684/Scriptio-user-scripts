@@ -32,7 +32,7 @@
     function main() {
         window.__VUE_MOUNT__.push(addHint);
     }
-    if (window.__VUE_ELEMENTS__) {
+    if (window.__VUE_MOUNT__) {
         main();
     } else {
         window.addEventListener("vue-hooked", main, { once: true });

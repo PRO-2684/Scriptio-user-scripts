@@ -5,6 +5,7 @@
     const self = document.currentScript?.getAttribute("data-scriptio-script");
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
     let enabled = false;
+    // Helper functions
     function validQQ(qq) {
         return qq && qq !== "0";
     }
@@ -39,6 +40,7 @@
             ctrlToCopy(el);
         }
     }
+    // Get description for each element
     function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements`
         if (!msgRecEl) return "";
         switch (msgRecEl.elementType) {
@@ -151,8 +153,8 @@
                 const raw = msgRecEl.arkElement?.bytesData;
                 if (!raw) return "";
                 const data = JSON.parse(raw);
-                const title = data.meta?.detail_1?.title;
-                const desc = data.meta?.detail_1?.desc;
+                const title = data.meta?.detail_1?.title || data.meta?.news?.tag;
+                const desc = data.meta?.detail_1?.desc || data.meta?.news?.title;
                 const prompt = data.prompt;
                 if (title && desc) {
                     return `[${title}] ${desc}`;
@@ -171,7 +173,8 @@
             }
         }
     }
-    function process(component) {
+    // Process message component
+    function inspectio(component) {
         const el = component?.vnode?.el;
         if (el?.classList?.contains("message")) {
             const msgRecEls = component?.props?.msgRecord?.elements;
@@ -190,18 +193,18 @@
     }
     function enable() {
         if (enabled) return;
-        window.__VUE_MOUNT__.push(process);
+        window.__VUE_MOUNT__.push(inspectio);
         enabled = true;
     }
     function disable() {
         if (!enabled) return;
-        const index = window.__VUE_MOUNT__.indexOf(process);
+        const index = window.__VUE_MOUNT__.indexOf(inspectio);
         if (index > -1) {
             window.__VUE_MOUNT__.splice(index, 1);
         }
         enabled = false;
     }
-    if (window.__VUE_ELEMENTS__) {
+    if (window.__VUE_MOUNT__) {
         enable();
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });
