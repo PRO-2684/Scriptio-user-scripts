@@ -6,7 +6,13 @@
 //   3. Use window.__VUE_MOUNT__ and window.__VUE_UNMOUNT__ to listen to component mount and unmount
 
 (function () {
-    if (window.__VUE_ELEMENTS__) return; // Avoid duplicate loading
+    if (window.__VUE_ELEMENTS__) {
+        if (!window.__VUE_MOUNT__ || !window.__VUE_UNMOUNT__) {
+            const tip = "[Scriptio] hook-vue.js: __VUE_ELEMENTS__ is already defined, but __VUE_MOUNT__ or __VUE_UNMOUNT__ is not defined. This is likely to be a conflict with another plugin, such as 轻量工具箱 or LLAPI.";
+            console.error(tip);
+        }
+        return;
+    }
     const elements = new WeakMap();
     window.__VUE_ELEMENTS__ = elements;
     window.__VUE_MOUNT__ = []; // Functions to call when component found ((component) => {})
