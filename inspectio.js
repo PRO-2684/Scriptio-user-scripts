@@ -56,9 +56,8 @@
                 const summary = data.summary;
                 if (summary) {
                     return `${summary} (${dimension})`;
-                } else {
-                    return dimension;
                 }
+                return dimension;
             }
             case 3: { // fileElement
                 const data = msgRecEl.fileElement;
@@ -86,14 +85,13 @@
                 const faceMap = state.common_QQFace?.dataMap;
                 if (faceMap) {
                     const face = faceMap[id];
-                    if (face && face.name) {
+                    if (face?.name) {
                         return `[${face.name}]`;
                     } else {
-                        return face.faceText || `[未知表情#${id}]`;
+                        return face?.faceText || `[未知表情#${id}]`;
                     }
-                } else {
-                    return "";
                 }
+                return "";
             }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
@@ -114,10 +112,38 @@
                     }
                     case 4: { // groupElement
                         const subData = data.groupElement;
-                        if (subData.adminUid) {
-                            const admin = `${uinToQQ(subData.adminUid)} (${subData.adminRemark || subData.adminNick})`;
-                            setTip(container, `处理人: ${admin}`);
+                        let adminUin = "";
+                        let adminName = "";
+                        let extra = "";
+                        switch (subData.type) {
+                            case 1: { // Add member
+                                adminUin = subData.adminUid;
+                                adminName = subData.adminRemark || subData.adminNick;
+                                break;
+                            }
+                            case 8: { // Shut up someone/all
+                                const shutUpData = subData.shutUp;
+                                adminUin = shutUpData.admin.uid;
+                                adminName = shutUpData.admin.name;
+                                const duration = shutUpData.duration;
+                                if (duration && duration !== "0") { // duration === "0": unban
+                                    extra = `禁言时长: ${duration === "268435455" ? "∞" : duration + "s"}, `;
+                                }
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
                         }
+                        if (adminUin) {
+                            const admin = `${uinToQQ(adminUin)} (${adminName})`;
+                            setTip(container, `${extra}处理人: ${admin}`);
+                        }
+                        return "";
+                    }
+                    case 12: { // xmlElement
+                        const subData = data.xmlElement;
+                        setTip(container, subData.content);
                         return "";
                     }
                     case 17: { // jsonGrayTipElement
@@ -173,11 +199,8 @@
                 const prompt = data.prompt;
                 if (title && desc) {
                     return `[${title}] ${desc}`;
-                } else if (prompt) {
-                    return prompt;
-                } else {
-                    return "";
                 }
+                return prompt || "";
             }
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
@@ -200,7 +223,6 @@
                 const desc = getDesc(msgRecEl, el);
                 const dom = container?.children[i];
                 if (desc && dom) {
-                    // dom.title = desc;
                     setTip(dom, desc);
                 }
             }
