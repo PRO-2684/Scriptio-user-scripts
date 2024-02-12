@@ -25,20 +25,15 @@
         }
         // TODO: Also try to find in `common_Contact_buddy`
     }
-    function ctrlToCopy(el) {
-        if (!el || !el.title) return;
+    function setTip(el, tip) {
+        if (!el || !tip) return;
+        el.title = tip;
         el.addEventListener("click", (e) => {
             if (e.ctrlKey) {
                 e.stopImmediatePropagation();
-                navigator?.clipboard?.writeText(el.title);
+                navigator?.clipboard?.writeText(tip);
             }
         }, { capture: true });
-    }
-    function setTip(el, tip) {
-        if (el && tip) {
-            el.title = tip;
-            ctrlToCopy(el);
-        }
     }
     // Get description for each element
     function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements`
@@ -87,21 +82,42 @@
             }
             case 6: { // faceElement
                 const data = msgRecEl.faceElement;
-                switch (data.faceType) {
-                    default: {
-                        return data.faceText || "";
+                const id = data.faceIndex;
+                const faceMap = state.common_QQFace?.dataMap;
+                if (faceMap) {
+                    const face = faceMap[id];
+                    if (face && face.name) {
+                        return `[${face.name}]`;
+                    } else {
+                        return face.faceText || `[未知表情#${id}]`;
                     }
+                } else {
+                    return "";
                 }
             }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
+                const container = el.querySelector(".gray-tip-content.gray-tip-element");
                 switch (data.subElementType) {
                     case 1: { // revokeElement
                         const subData = data.revokeElement;
-                        const sender = `${uinToQQ(subData.origMsgSenderUid)} (${subData.origMsgSenderMemRemark || subData.origMsgSenderNick})`;
-                        const operator = `${uinToQQ(subData.operatorUid)} (${subData.operatorMemRemark || subData.operatorNick})`;
-                        const msg = el.querySelector(".gray-tip-message");
-                        setTip(msg, `发送者: ${sender}\n撤回者: ${operator}`);
+                        const senderUin = subData.origMsgSenderUid;
+                        const operatorUin = subData.operatorUid;
+                        const sender = `${uinToQQ(senderUin)} (${subData.origMsgSenderMemRemark || subData.origMsgSenderNick})`;
+                        if (operatorUin === senderUin) {
+                            setTip(container, sender);
+                        } else {
+                            const operator = `${uinToQQ(operatorUin)} (${subData.operatorMemRemark || subData.operatorNick})`;
+                            setTip(container, `发送者: ${sender}\n撤回者: ${operator}`);
+                        }
+                        return "";
+                    }
+                    case 4: { // groupElement
+                        const subData = data.groupElement;
+                        if (subData.adminUid) {
+                            const admin = `${uinToQQ(subData.adminUid)} (${subData.adminRemark || subData.adminNick})`;
+                            setTip(container, `处理人: ${admin}`);
+                        }
                         return "";
                     }
                     case 17: { // jsonGrayTipElement
@@ -115,7 +131,6 @@
                                 queue.push([part.nm, validQQ(part.uin) ? part.uin : uinToQQ(part.uid)]);
                             }
                         });
-                        const container = el.querySelector(".gray-tip-content.gray-tip-element");
                         if (!container) return "";
                         for (const node of container.childNodes) {
                             if (node.nodeType !== Node.TEXT_NODE) continue;

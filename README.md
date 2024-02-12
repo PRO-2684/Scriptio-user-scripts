@@ -76,6 +76,7 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 - 各类灰字提示中的 QQ 号
     - 撤回提示
     - 红包提示
+    - 群成员变动提示
 
 ## [link-preview](./link-preview.js)
 
