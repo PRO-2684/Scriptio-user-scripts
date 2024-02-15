@@ -59,7 +59,7 @@
                 let max = 10;
                 return new Promise((resolve) => {
                     const timer = window.setInterval(() => {
-                        const menu = document.querySelector("div#qContextMenu.more-menu");
+                        const menu = document.querySelector("div.q-context-menu.more-menu");
                         if (menu && menu.children) {
                             for (const child of menu.children) {
                                 if (child.textContent === "设置") {
