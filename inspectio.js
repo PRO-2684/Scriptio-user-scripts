@@ -4,8 +4,15 @@
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
+    const MAXLEN = 100;
     let enabled = false;
     // Helper functions
+    function truncate(s) {
+        if (s.length > MAXLEN) {
+            return s.slice(0, MAXLEN) + "...";
+        }
+        return s;
+    }
     function b64decode(s) {
         return s ? decodeURIComponent(escape(window.atob(s))) : "";
     }
@@ -58,7 +65,7 @@
                 const dimension = `${data.picWidth} x ${data.picHeight}`;
                 const summary = data.summary;
                 if (summary) {
-                    return `${summary} (${dimension})`;
+                    return `${truncate(summary)} (${dimension})`;
                 }
                 return dimension;
             }
@@ -200,20 +207,20 @@
                 switch (data.app) {
                     case "com.tencent.structmsg": { // 结构化消息 (链接分享)
                         const detail = data.meta?.news;
-                        const title = detail?.tag;
-                        const desc = detail?.title;
+                        const title = truncate(detail?.tag);
+                        const desc = truncate(detail?.title);
                         return title && desc ? `[${title}] ${desc}` : data.prompt || "";
                     }
                     case "com.tencent.miniapp_01": { // 小程序
                         const detail = data.meta?.detail_1;
-                        const title = detail?.title;
-                        const desc = detail?.desc;
+                        const title = truncate(detail?.title);
+                        const desc = truncate(detail?.desc);
                         return title && desc ? `[${title}] ${desc}` : data.prompt || "";
                     }
                     case "com.tencent.mannounce": { // 群公告
                         const detail = data.meta?.mannounce;
-                        const title = b64decode(detail?.title);
-                        const desc = b64decode(detail?.text);
+                        const title = truncate(b64decode(detail?.title));
+                        const desc = truncate(b64decode(detail?.text));
                         return title && desc ? `[${title}]\n${desc}` : data.prompt || "";
                     }
                     default:
