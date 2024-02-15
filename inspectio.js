@@ -6,6 +6,9 @@
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
     let enabled = false;
     // Helper functions
+    function b64decode(s) {
+        return s ? decodeURIComponent(escape(window.atob(s))) : "";
+    }
     function validQQ(qq) {
         return qq && qq !== "0";
     }
@@ -194,13 +197,28 @@
                 const raw = msgRecEl.arkElement?.bytesData;
                 if (!raw) return "";
                 const data = JSON.parse(raw);
-                const title = data.meta?.detail_1?.title || data.meta?.news?.tag;
-                const desc = data.meta?.detail_1?.desc || data.meta?.news?.title;
-                const prompt = data.prompt;
-                if (title && desc) {
-                    return `[${title}] ${desc}`;
+                switch (data.app) {
+                    case "com.tencent.structmsg": { // 结构化消息 (链接分享)
+                        const detail = data.meta?.news;
+                        const title = detail?.tag;
+                        const desc = detail?.title;
+                        return title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                    }
+                    case "com.tencent.miniapp_01": { // 小程序
+                        const detail = data.meta?.detail_1;
+                        const title = detail?.title;
+                        const desc = detail?.desc;
+                        return title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                    }
+                    case "com.tencent.mannounce": { // 群公告
+                        const detail = data.meta?.mannounce;
+                        const title = b64decode(detail?.title);
+                        const desc = b64decode(detail?.text);
+                        return title && desc ? `[${title}]\n${desc}` : data.prompt || "";
+                    }
+                    default:
+                        return data.prompt || "";
                 }
-                return prompt || "";
             }
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
