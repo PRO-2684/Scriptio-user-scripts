@@ -4,9 +4,16 @@
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
     const minHoverTime = 500; // Minimum hover time before fetching link info
+    const MAXLEN = 200;
     // const log = console.log.bind(console, "[Link Preview]");
     const log = () => {};
     let enabled = false;
+    function truncate(s) { // Truncate a string so it doesn't take too much space
+        if (s.length > MAXLEN) {
+            return s.slice(0, MAXLEN) + "...";
+        }
+        return s;
+    }
     function getTitle(doc) { // Get the title of a website
         const title = doc.querySelector("title");
         return title?.textContent || "";
@@ -22,8 +29,8 @@
             const parser = new DOMParser();
             const doc = parser.parseFromString(text, "text/html");
             const l = [];
-            const title = getTitle(doc);
-            const desc = getDesc(doc);
+            const title = truncate(getTitle(doc));
+            const desc = truncate(getDesc(doc));
             if (title) l.push(title);
             if (desc) l.push(desc);
             return l.join("\n") || "暂无链接浏览";
