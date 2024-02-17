@@ -24,8 +24,7 @@
     }
     async function getLinkInfo(url) { // Get the title and description of a link
         try {
-            const res = await fetch(url);
-            const text = await res.text();
+            const text = await scriptio.fetchText(url, { headers: { "User-Agent": navigator.userAgent } } );
             const parser = new DOMParser();
             const doc = parser.parseFromString(text, "text/html");
             const l = [];
