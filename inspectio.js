@@ -63,11 +63,10 @@
             case 2: { // picElement
                 const data = msgRecEl.picElement;
                 const dimension = `${data.picWidth} x ${data.picHeight}`;
+                const size = `${data.fileSize} Bytes`;
+                const info = `${dimension}, ${size}`;
                 const summary = data.summary;
-                if (summary) {
-                    return `${truncate(summary)} (${dimension})`;
-                }
-                return dimension;
+                return summary ? `${truncate(summary)} (${info})` : info;
             }
             case 3: { // fileElement
                 const data = msgRecEl.fileElement;
@@ -75,10 +74,7 @@
                 const optionalPath = data.filePath ? `\nPath: ${data.filePath}` : "";
                 const tip = `${data.fileName}${optionalDimension}\nSize: ${data.fileSize} Bytes\nMD5: ${data.fileMd5.toUpperCase()}${optionalPath}`;
                 setTip(el.querySelector(".file-element"), tip);
-                const fnameEl = el.querySelector(".file-element .file-name");
-                if (fnameEl) {
-                    fnameEl.removeAttribute("title");
-                }
+                el.querySelector(".file-element .file-name")?.removeAttribute("title");
                 return "";
             }
             case 4: { // pttElement
@@ -156,6 +152,9 @@
                         setTip(container, subData.content);
                         return "";
                     }
+                    case 15: { // aioOpGrayTipElement
+                        return "";
+                    }
                     case 17: { // jsonGrayTipElement
                         const subData = data.jsonGrayTipElement;
                         const raw = subData.jsonStr;
@@ -219,9 +218,12 @@
                     }
                     case "com.tencent.mannounce": { // 群公告
                         const detail = data.meta?.mannounce;
-                        const title = truncate(b64decode(detail?.title));
-                        const desc = truncate(b64decode(detail?.text));
+                        const title = b64decode(detail?.title);
+                        const desc = b64decode(detail?.text);
                         return title && desc ? `[${title}]\n${desc}` : data.prompt || "";
+                    }
+                    case "com.tencent.gamecenter.gameshare": { // 游戏分享
+                        return "[游戏分享] " + data.prompt || "";
                     }
                     default:
                         return data.prompt || "";
