@@ -39,7 +39,7 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
         // <禁用脚本的额外工作>
         enabled = false;
     }
-    if (window.__VUE_ELEMENTS__) {
+    if (window.__VUE_MOUNT__) {
         enable();
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });
@@ -111,6 +111,9 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 ## [privacio](./privacio.js)
 
 保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持。
+
+> [!NOTE]
+> 您仍有可能在 chii DevTools 中看到一些 pending 的追踪请求，这是因为 chii DevTools 的工作方式，实际上用 Fiddler 等抓包工具可以得知它们确实被拦截了。
 
 ## [shortcutio](./shortcutio.js)
 
