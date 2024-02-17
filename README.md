@@ -59,6 +59,10 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 
 **注意：可能与其他插件的类似功能冲突！**
 
+## [hook-fetch](./hook-fetch.js)
+
+Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `window.__FETCH_HOOKS_AFTER__` 添加请求前和请求后的处理函数。使用方法见代码注释。
+
 ## [img-quick-close](./img-quick-close.js)
 
 查看图片时，单击窗口任意位置 (除功能按钮外) 即可关闭图片查看器。(类似于旧版本 QQ/微信)
@@ -103,6 +107,10 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 ## [plugin-icon](./plugin-icon.js)
 
 设置界面展示插件图标（若有）。
+
+## [privacio](./privacio.js)
+
+保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持。
 
 ## [shortcutio](./shortcutio.js)
 
