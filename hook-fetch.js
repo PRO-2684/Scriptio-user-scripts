@@ -2,7 +2,7 @@
 
 (function () {
     const name = "[Hook Fetch]";
-    const debug = true;
+    const debug = false;
     const log = debug ? console.log.bind(console, name) : () => { };
     window._fetch = window.fetch;
     window.__FETCH_HOOKS_BEFORE__ = []; // (resource, options) => true / [resource, options] / void/null/undefined/false (keep request / modify request / block request)
