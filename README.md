@@ -83,6 +83,9 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
     - 红包提示
     - 群成员变动提示
     - 禁言提示
+- 撤回提示补全“自定义撤回消息”
+
+![撤回提示补全](./images/inspectio-revokeElement.jpg)
 
 ## [link-preview](./link-preview.js)
 

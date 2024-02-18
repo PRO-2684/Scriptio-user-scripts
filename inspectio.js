@@ -46,7 +46,7 @@
         }, { capture: true });
     }
     // Get description for each element
-    function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements`
+    function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements` and `.message` element
         if (!msgRecEl) return "";
         switch (msgRecEl.elementType) {
             case 1: { // textElement
@@ -113,6 +113,15 @@
                         } else {
                             const operator = `${uinToQQ(operatorUin)} (${subData.operatorMemRemark || subData.operatorNick})`;
                             setTip(container, `发送者: ${sender}\n撤回者: ${operator}`);
+                        }
+                        const wording = subData.wording.trim();
+                        const msgTime = container.querySelector(".message-time");
+                        if (wording) {
+                            if (msgTime) {
+                                msgTime.before("，" + wording);
+                            } else {
+                                container.append("，" + wording);
+                            }
                         }
                         return "";
                     }
