@@ -231,6 +231,26 @@
                         const desc = b64decode(detail?.text);
                         return title && desc ? `[${title}]\n${desc}` : data.prompt || "";
                     }
+                    case "com.tencent.qzone.video": { // QQ 空间视频
+                        const detail = data.meta?.data;
+                        const feedInfo = detail?.feedInfo;
+                        const qq = detail?.userInfo?.uin || "未知 QQ";
+                        const title = truncate(data.prompt) || "<无标题>";
+                        const desc = truncate(data.desc) || "<无描述>";
+                        const statistics = [feedInfo?.likeNum, feedInfo?.commentNum, feedInfo?.shareNum];
+                        const mapping = ["赞", "评", "转"];
+                        const stats = statistics.map((v, i) => (v !== null && v !== undefined) ? `${v} ${mapping[i]}` : "").filter(Boolean).join(", ") || "<无统计数据>";
+                        const url = feedInfo?.jumpUrl;
+                        let final = `${title} (${qq})\n${stats}\n${desc}`;
+                        const container = el.querySelector(".ark-msg-content-container .ark-item-container");
+                        if (url && container) {
+                            final = "**双击打开链接**\n" + final;
+                            container.addEventListener("dblclick", () => {
+                                scriptio.open("link", url);
+                            });
+                        }
+                        return final;
+                    }
                     case "com.tencent.gamecenter.gameshare": { // 游戏分享
                         return "[游戏分享] " + data.prompt || "";
                     }
