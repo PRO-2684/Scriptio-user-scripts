@@ -212,6 +212,13 @@
                 const raw = msgRecEl.arkElement?.bytesData;
                 if (!raw) return "";
                 const data = JSON.parse(raw);
+                const container = el.querySelector(".ark-msg-content-container .ark-item-container");
+                container?.addEventListener("click", (e) => {
+                    if (e.shiftKey) { // Shift+Click to copy raw code
+                        e.stopImmediatePropagation();
+                        navigator?.clipboard?.writeText(raw);
+                    }
+                }, { capture: true });
                 switch (data.app) {
                     case "com.tencent.structmsg": { // 结构化消息 (链接分享)
                         const detail = data.meta?.news;
@@ -231,7 +238,8 @@
                         const desc = b64decode(detail?.text);
                         return title && desc ? `[${title}]\n${desc}` : data.prompt || "";
                     }
-                    case "com.tencent.qzone.video": { // QQ 空间视频
+                    case "com.tencent.qzone.video": // QQ 空间视频
+                    case "com.tencent.wezone.share": { // QQ 短视频
                         const detail = data.meta?.data;
                         const feedInfo = detail?.feedInfo;
                         const qq = detail?.userInfo?.uin || "未知 QQ";
@@ -242,12 +250,14 @@
                         const stats = statistics.map((v, i) => (v !== null && v !== undefined) ? `${v} ${mapping[i]}` : "").filter(Boolean).join(", ") || "<无统计数据>";
                         const url = feedInfo?.jumpUrl;
                         let final = `${title} (${qq})\n${stats}\n${desc}`;
-                        const container = el.querySelector(".ark-msg-content-container .ark-item-container");
                         if (url && container) {
-                            final = "**双击打开链接**\n" + final;
-                            container.addEventListener("dblclick", () => {
-                                scriptio.open("link", url);
-                            });
+                            final = "**Alt+Click 以在浏览器中打开链接**\n" + final;
+                            container.addEventListener("click", (e) => {
+                                if (e.altKey) {
+                                    e.stopImmediatePropagation();
+                                    scriptio.open("link", url);
+                                }
+                            }, { capture: true });
                         }
                         return final;
                     }
