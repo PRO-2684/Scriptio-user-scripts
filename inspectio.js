@@ -242,6 +242,28 @@
                         final = title && desc ? `[${title}]\n${desc}` : data.prompt || "";
                         break;
                     }
+                    case "com.tencent.multimsg": { // 转发消息
+                        const detail = data.meta?.detail;
+                        const fileName = detail?.uniseq;
+                        const resId = detail?.resid;
+                        const container = el.querySelector(".forward-msg");
+                        let final = "";
+                        if (fileName) {
+                            final += `fileName/uniseq: ${fileName}\n`;
+                        }
+                        if (resId) {
+                            final += `resId: ${resId}\n`;
+                        }
+                        if (container) {
+                            setTip(container, final);
+                            for (const child of container.children) {
+                                if (child.classList.contains("fwd-content")) {
+                                    child.title = child.textContent;
+                                }
+                            }
+                        }
+                        return "";
+                    }
                     case "com.tencent.qzone.video": // QQ 空间视频
                     case "com.tencent.wezone.share": { // QQ 短视频
                         const detail = data.meta?.data;
@@ -316,6 +338,36 @@
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
                 return `${data.faceName} (${data.imageWidth} x ${data.imageHeight})`;
+            }
+            case 16: { // multiForwardMsgElement
+                const data = msgRecEl.multiForwardMsgElement;
+                const fileName = data.fileName;
+                const resId = data.resId;
+                const xml = data.xmlContent;
+                const container = el.querySelector(".forward-msg");
+                let final = "";
+                if (fileName) {
+                    final += `fileName/uniseq: ${fileName}\n`;
+                }
+                if (resId) {
+                    final += `resId: ${resId}\n`;
+                }
+                if (xml && container) {
+                    final = "**Shift+Click 以复制 XML 代码**\n" + final;
+                    container.addEventListener("click", (e) => {
+                        if (e.shiftKey) {
+                            e.stopImmediatePropagation();
+                            navigator?.clipboard?.writeText(xml);
+                        }
+                    }, { capture: true });
+                    setTip(container, final);
+                    for (const child of container.children) {
+                        if (child.classList.contains("fwd-content")) {
+                            child.title = child.textContent;
+                        }
+                    }
+                }
+                return "";
             }
             default: {
                 return "";
