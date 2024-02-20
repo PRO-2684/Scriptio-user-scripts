@@ -209,6 +209,7 @@
                 return `${tip} (${state})`
             }
             case 10: { // arkElement
+                let final = "";
                 const raw = msgRecEl.arkElement?.bytesData;
                 if (!raw) return "";
                 const data = JSON.parse(raw);
@@ -224,19 +225,22 @@
                         const detail = data.meta?.news;
                         const title = truncate(detail?.tag);
                         const desc = truncate(detail?.title);
-                        return title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        break;
                     }
                     case "com.tencent.miniapp_01": { // 小程序
                         const detail = data.meta?.detail_1;
                         const title = truncate(detail?.title);
                         const desc = truncate(detail?.desc);
-                        return title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        break;
                     }
                     case "com.tencent.mannounce": { // 群公告
                         const detail = data.meta?.mannounce;
                         const title = b64decode(detail?.title);
                         const desc = b64decode(detail?.text);
-                        return title && desc ? `[${title}]\n${desc}` : data.prompt || "";
+                        final = title && desc ? `[${title}]\n${desc}` : data.prompt || "";
+                        break;
                     }
                     case "com.tencent.qzone.video": // QQ 空间视频
                     case "com.tencent.wezone.share": { // QQ 短视频
@@ -249,7 +253,7 @@
                         const mapping = ["赞", "评", "转"];
                         const stats = statistics.map((v, i) => (v !== null && v !== undefined) ? `${v} ${mapping[i]}` : "").filter(Boolean).join(", ") || "<无统计数据>";
                         const url = feedInfo?.jumpUrl;
-                        let final = `${title} (${qq})\n${stats}\n${desc}`;
+                        final = `${title} (${qq})\n${stats}\n${desc}`;
                         if (url && container) {
                             final = "**Alt+Click 以在浏览器中打开链接**\n" + final;
                             container.addEventListener("click", (e) => {
@@ -259,14 +263,55 @@
                                 }
                             }, { capture: true });
                         }
-                        return final;
+                        break;
                     }
                     case "com.tencent.gamecenter.gameshare": { // 游戏分享
-                        return "[游戏分享] " + data.prompt || "";
+                        final = "[游戏分享] " + data.prompt || "";
+                        break;
+                    }
+                    case "com.tencent.contact.lua": { // 联系人分享
+                        const detail = data.meta?.contact;
+                        const raw = detail?.contact;
+                        const qq = raw.startsWith("帐号：") ? raw.slice(3) : raw;
+                        final = data.prompt;
+                        if (qq) {
+                            final += ` (${qq})`;
+                            if (container) {
+                                final = "**Alt+Click 以复制 QQ 号**\n" + final;
+                                container.addEventListener("click", (e) => {
+                                    if (e.altKey) {
+                                        e.stopImmediatePropagation();
+                                        navigator?.clipboard?.writeText(qq);
+                                    }
+                                }, { capture: true });
+                            }
+                        }
+                        break;
+                    }
+                    case "com.tencent.map": { // 位置分享
+                        const detail = data.meta?.["Location.Search"];
+                        const keyword = detail?.address;
+                        const lat = detail?.lat;
+                        const lng = detail?.lng;
+                        const pos = `${lat},${lng}`;
+                        const name = detail?.name || "位置分享";
+                        final = `[${name}]\n${keyword}\n(${pos})`;
+                        if (container) {
+                            final = "**Alt+Click 以在浏览器打开腾讯地图**\n" + final;
+                            container.addEventListener("click", (e) => {
+                                if (e.altKey) {
+                                    e.stopImmediatePropagation();
+                                    scriptio.open("link", `https://apis.map.qq.com/uri/v1/marker?marker=coord:${pos};title:${name};addr:${keyword}&referer=qqnt`);
+                                }
+                            }, { capture: true });
+                        }
+                        break;
                     }
                     default:
-                        return data.prompt || "";
+                        final = data.prompt || "";
+                        break;
                 }
+                return "**Shift+Click 以复制卡片消息代码**\n" + final;
             }
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
