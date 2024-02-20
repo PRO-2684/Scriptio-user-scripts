@@ -89,15 +89,19 @@
                 const data = msgRecEl.faceElement;
                 const id = data.faceIndex;
                 const faceMap = state.common_QQFace?.dataMap;
+                let final = "";
                 if (faceMap) {
                     const face = faceMap[id];
                     if (face?.name) {
-                        return `[${face.name}]`;
+                        final += `[${face.name}]`;
                     } else {
-                        return face?.faceText || `[未知表情#${id}]`;
+                        final += face?.faceText || `[未知表情#${id}]`;
                     }
                 }
-                return "";
+                if (data.chainCount) {
+                    final += ` (x${data.chainCount})`;
+                }
+                return final;
             }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
