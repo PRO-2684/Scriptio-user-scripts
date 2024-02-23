@@ -8,6 +8,7 @@
         const el = component?.vnode?.el;
         if (!el?.classList?.contains("message")) return;
         function update() {
+            if (!enabled) return;
             const props = component.props;
             const timestamp = props?.msgRecord?.msgTime * 1000 || 0; // String implicitly converted to number
             const date = new Date(timestamp);
@@ -25,7 +26,7 @@
                 navigator?.clipboard?.writeText(String(timestamp));
             });
         }
-        component.proxy.$watch("$props.msgRecord.elements", update, { deep: true, immediate: true, flush: "post" });
+        component.proxy.$watch("$props.msgRecord.elements", update, { immediate: true, flush: "post" });
     }
     function enable() {
         if (enabled) return;

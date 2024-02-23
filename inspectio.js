@@ -405,7 +405,7 @@
                 }
             }
         }
-        component.proxy.$watch("$props.msgRecord.elements", update, { deep: true, immediate: true, flush: "post" });
+        component.proxy.$watch("$props.msgRecord.elements", update, { immediate: true, flush: "post" });
     }
     function enable() {
         if (enabled) return;
