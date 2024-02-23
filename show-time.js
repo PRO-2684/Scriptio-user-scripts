@@ -7,21 +7,25 @@
     function addTime(component) {
         const el = component?.vnode?.el;
         if (!el?.classList?.contains("message")) return;
-        const props = component.props;
-        const timestamp = props?.msgRecord?.msgTime * 1000 || 0; // String implicitly converted to number
-        const date = new Date(timestamp);
-        const fullTime = timestamp ? date.toLocaleString("zh-CN") : "未知时间";
-        const simpleTime = timestamp ? date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "未知时间";
-        const timeEl = document.createElement("span");
-        timeEl.classList.add("message-time");
-        timeEl.textContent = simpleTime;
-        timeEl.title = fullTime;
-        const parent = el.querySelector(".message-content__wrapper") || el.querySelector(".gray-tip-content.gray-tip-element");
-        const position = el.querySelector(".message-container--align-right") ? "afterbegin" : "beforeend";
-        parent?.insertAdjacentElement(position, timeEl);
-        timeEl.addEventListener("dblclick", () => {
-            navigator?.clipboard?.writeText(String(timestamp));
-        });
+        function update() {
+            const props = component.props;
+            const timestamp = props?.msgRecord?.msgTime * 1000 || 0; // String implicitly converted to number
+            const date = new Date(timestamp);
+            const fullTime = timestamp ? date.toLocaleString("zh-CN") : "未知时间";
+            const simpleTime = timestamp ? date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "未知时间";
+            el.querySelector(".message-time")?.remove();
+            const timeEl = document.createElement("span");
+            timeEl.classList.add("message-time");
+            timeEl.textContent = simpleTime;
+            timeEl.title = fullTime;
+            const parent = el.querySelector(".message-content__wrapper") || el.querySelector(".gray-tip-content.gray-tip-element");
+            const position = el.querySelector(".message-container--align-right") ? "afterbegin" : "beforeend";
+            parent?.insertAdjacentElement(position, timeEl);
+            timeEl.addEventListener("dblclick", () => {
+                navigator?.clipboard?.writeText(String(timestamp));
+            });
+        }
+        component.proxy.$watch("$props.msgRecord.elements", update, { deep: true, immediate: true, flush: "post" });
     }
     function enable() {
         if (enabled) return;

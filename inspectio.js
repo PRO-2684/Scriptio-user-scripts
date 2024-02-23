@@ -3,6 +3,7 @@
 
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
+    const inspectedAttr = "inspectio-inspected";
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
     const MAXLEN = 100;
     let enabled = false;
@@ -35,15 +36,19 @@
         }
         // TODO: Also try to find in `common_Contact_buddy`
     }
+    function clickHandler(e) {
+        if (e.ctrlKey) {
+            e.stopImmediatePropagation();
+            navigator?.clipboard?.writeText(this.title);
+        }
+    }
     function setTip(el, tip) {
+        const tipAttr = "inspectio-tip";
         if (!el || !tip) return;
         el.title = tip;
-        el.addEventListener("click", (e) => {
-            if (e.ctrlKey) {
-                e.stopImmediatePropagation();
-                navigator?.clipboard?.writeText(tip);
-            }
-        }, { capture: true });
+        if (el.hasAttribute(tipAttr)) return;
+        el.addEventListener("click", clickHandler, { capture: true });
+        el.toggleAttribute(tipAttr, true);
     }
     // Get description for each element
     function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements` and `.message` element
@@ -120,11 +125,14 @@
                         }
                         const wording = subData.wording.trim();
                         const msgTime = container.querySelector(".message-time");
-                        if (wording) {
+                        if (wording && !container.querySelector(".revoke-wording")) {
+                            const span = document.createElement("span");
+                            span.className = "revoke-wording";
+                            span.textContent = "，" + wording;
                             if (msgTime) {
-                                msgTime.before("，" + wording);
+                                msgTime.before(span);
                             } else {
-                                container.append("，" + wording);
+                                container.append(span);
                             }
                         }
                         return "";
@@ -291,6 +299,8 @@
                         }
                         break;
                     }
+                    // case "com.tencent.qzone.albumInvite": { // QQ 空间说说
+                    // }
                     case "com.tencent.gamecenter.gameshare": { // 游戏分享
                         final = "[游戏分享] " + data.prompt || "";
                         break;
@@ -381,7 +391,8 @@
     // Process message component
     function inspectio(component) {
         const el = component?.vnode?.el;
-        if (el?.classList?.contains("message")) {
+        if (!el?.classList?.contains("message")) return;
+        function update() {
             const msgRecEls = component?.props?.msgRecord?.elements;
             const container = el.querySelector(".message-content__wrapper > div > div");
             if (!msgRecEls?.length) return;
@@ -394,6 +405,7 @@
                 }
             }
         }
+        component.proxy.$watch("$props.msgRecord.elements", update, { deep: true, immediate: true, flush: "post" });
     }
     function enable() {
         if (enabled) return;
