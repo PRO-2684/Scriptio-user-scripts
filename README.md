@@ -73,10 +73,12 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 - 被艾特的 QQ 号
 - 表情/表情包/图片的摘要、长宽
+- 图片文件名、尺寸、占用大小以及网址
 - 视频文件名、时长以及占用大小
 - 红包领取信息
 - 语音消息的时长以及占用大小
 - 小程序/卡片分享的摘要
+    - Shift+Click 可复制小程序/卡片分享的代码
 - 群公告展示完整内容
 - 各类灰字提示中的 QQ 号
     - 撤回提示
@@ -142,3 +144,7 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 消息后显示时间，鼠标悬停显示详细时间，双击复制时间戳，需要 hook-vue.js 的支持。*关闭/打开可能需要切换一次聊天窗口/上下滚动几屏才能生效。*
 
 ![show-time](./images/show-time.jpg)
+
+## [smooth-transition](./smooth-transition.js)
+
+为页面间导航添加平滑过渡动画。

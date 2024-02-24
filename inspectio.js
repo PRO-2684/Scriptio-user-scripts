@@ -71,7 +71,9 @@
                 const size = `${data.fileSize} Bytes`;
                 const info = `${dimension}, ${size}`;
                 const summary = data.summary;
-                return summary ? `${truncate(summary)} (${info})` : info;
+                const fileName = data.fileName;
+                const url = data.originImageUrl ? "https://gchat.qpic.cn" + data.originImageUrl : "图片已过期";
+                return (summary ? `${truncate(summary)} (${info})` : info) + `\n${fileName}\n${url}`;
             }
             case 3: { // fileElement
                 const data = msgRecEl.fileElement;
@@ -146,6 +148,9 @@
                             case 1: { // Add member
                                 adminUin = subData.adminUid;
                                 adminName = subData.adminRemark || subData.adminNick;
+                                break;
+                            }
+                            case 2: { // Disband group
                                 break;
                             }
                             case 8: { // Shut up someone/all
@@ -305,21 +310,42 @@
                         final = "[游戏分享] " + data.prompt || "";
                         break;
                     }
-                    case "com.tencent.contact.lua": { // 联系人分享
-                        const detail = data.meta?.contact;
-                        const raw = detail?.contact;
-                        const qq = raw.startsWith("帐号：") ? raw.slice(3) : raw;
+                    case "com.tencent.troopsharecard": { // 推荐群聊
+                        const url = data.meta?.contact?.jumpUrl;
                         final = data.prompt;
-                        if (qq) {
-                            final += ` (${qq})`;
+                        if (url) {
+                            const qq = new URL(url).searchParams.get("group_code");
+                            if (qq) {
+                                final += ` (${qq})`;
+                            }
                             if (container) {
-                                final = "**Alt+Click 以复制 QQ 号**\n" + final;
+                                final = "**Alt+Click 以复制邀请链接**\n" + final;
                                 container.addEventListener("click", (e) => {
                                     if (e.altKey) {
                                         e.stopImmediatePropagation();
-                                        navigator?.clipboard?.writeText(qq);
+                                        navigator?.clipboard?.writeText(url);
                                     }
                                 }, { capture: true });
+                            }
+                        }
+                        break;
+                    }
+                    case "com.tencent.contact.lua": { // 推荐好友
+                        const url = data.meta?.contact?.jumpUrl;
+                        final = data.prompt;
+                        if (url) {
+                            const qq = new URL(url).searchParams.get("uin");
+                            if (qq) {
+                                final += ` (${qq})`;
+                                if (container) {
+                                    final = "**Alt+Click 以复制 QQ 号**\n" + final;
+                                    container.addEventListener("click", (e) => {
+                                        if (e.altKey) {
+                                            e.stopImmediatePropagation();
+                                            navigator?.clipboard?.writeText(qq);
+                                        }
+                                    }, { capture: true });
+                                }
                             }
                         }
                         break;
