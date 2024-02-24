@@ -113,7 +113,14 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 ## [privacio](./privacio.js)
 
-保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持。
+保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持。此脚本仅能阻止渲染层的追踪，无法阻止主进程的追踪。目前已知可以阻止的域名：
+
+- `otheve.beacon.qq.com`
+- `tpstelemetry.tencent.com`
+- `h.trace.qq.com`
+- `report.gamecenter.qq.com`
+
+此脚本仅能拦截前三个。关于如何拦截列出的所有域名，详见 [此 Gist](https://gist.github.com/PRO-2684/4353310541c63fe7aef643d14bc92ff0)。
 
 > [!NOTE]
 > 您仍有可能在 chii DevTools 中看到一些 pending 的追踪请求，这是因为 chii DevTools 的工作方式，实际上用 Fiddler 等抓包工具可以得知它们确实被拦截了。
