@@ -127,6 +127,12 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 > [!NOTE]
 > 您仍有可能在 chii DevTools 中看到一些 pending 的追踪请求，这是因为 chii DevTools 的工作方式，实际上用 Fiddler 等抓包工具可以得知它们确实被拦截了。
 
+## [relay-self](./relay-self.js)
+
+允许接龙自己的消息，需要 hook-vue.js 的支持
+
+![relay-self](./images/relay-self.jpg)
+
 ## [shortcutio](./shortcutio.js)
 
 添加常用快捷键，包括：
