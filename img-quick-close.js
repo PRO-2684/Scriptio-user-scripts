@@ -1,45 +1,27 @@
 // * 单击关闭图片查看器
 // @run-at image-viewer
 (function () {
-    // 修改自: https://github.com/xiyuesaves/LiteLoaderQQNT-lite_tools/blob/45c1d7c7fab0dd4c22cc930076036063a8d204b7/src/renderer.js#L397C48-L397C48
-    const appEl = document.querySelector("#app");
-    const option = { attributes: false, childList: true, subtree: true };
-    const setup = () => {
-        const img = document.querySelector(".main-area--image > .main-area__content");
+    // 修改自: https://github.com/xiyuesaves/LiteLoaderQQNT-lite_tools/blob/4c3f2a532811cacc86372f2acbe652386b9c6e96/src/render_modules/betterImageViewer.js#L7
+    let offset = 0;
+    document.addEventListener("mousedown", (e) => {
+        if (e.buttons === 1) {
+            offset = 0;
+        } else {
+            offset = 3;
+        }
+    });
+    document.addEventListener("mousemove", (e) => {
+        if (e.buttons === 1) {
+            offset += Math.abs(e.movementX) + Math.abs(e.movementY);
+        }
+    });
+    document.addEventListener("mouseup", (e) => {
+        const rightMenu = document.querySelector(".q-context-menu");
         const video = document.querySelector("embed");
-        if (img) {
-            let isMove = false;
-            img.addEventListener("mousedown", (event) => {
-                if (event.button === 0) {
-                    isMove = false;
-                }
-            });
-            img.addEventListener("mousemove", (event) => {
-                if (event.button === 0) {
-                    isMove = true;
-                }
-            });
-            img.addEventListener("mouseup", (event) => {
-                let rightMenu = document.querySelector("#qContextMenu");
-                if (!isMove && event.button === 0 && !rightMenu) {
-                    document.querySelector(`div[aria-label="关闭"]`).click();
-                }
-            });
-            return true;
-        } else if (video) {
-            // 判断打开的是视频
-            return true;
+        if (offset < 2 && e.buttons === 0 && !rightMenu && !video) {
+            if (e.target.closest(".main-area__content")) {
+                document.querySelector(`div[aria-label="关闭"]`).click();
+            }
         }
-        return false;
-    };
-    const callback = (mutationsList, observer) => {
-        if (setup()) {
-            observer.disconnect();
-        }
-    };
-    if (setup()) {
-        return; // 已经加载成功
-    }
-    const observer = new MutationObserver(callback);
-    observer.observe(appEl, option); // 等待加载
+    });
 })();
