@@ -3,7 +3,6 @@
 
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
-    const inspectedAttr = "inspectio-inspected";
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
     const MAXLEN = 100;
     let enabled = false;
@@ -364,6 +363,24 @@
                                 if (e.altKey) {
                                     e.stopImmediatePropagation();
                                     scriptio.open("link", `https://apis.map.qq.com/uri/v1/marker?marker=coord:${pos};title:${name};addr:${keyword}&referer=qqnt`);
+                                }
+                            }, { capture: true });
+                        }
+                        break;
+                    }
+                    case "com.tencent.forum": { // 频道
+                        const detail = data.meta?.detail;
+                        const url = detail?.jump_url;
+                        const channelInfo = detail?.channel_info;
+                        const channel = `${channelInfo?.guild_name} > ${channelInfo?.channel_name}`;
+                        const poster = detail?.poster?.nick;
+                        final = `${data.prompt}\n频道：${channel}\n楼主：${poster}`;
+                        if (url && container) {
+                            final = "**Alt+Click 以在浏览器中打开链接**\n" + final;
+                            container.addEventListener("click", (e) => {
+                                if (e.altKey) {
+                                    e.stopImmediatePropagation();
+                                    scriptio.open("link", url);
                                 }
                             }, { capture: true });
                         }
