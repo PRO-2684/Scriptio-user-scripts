@@ -24,7 +24,7 @@
         ele.dispatchEvent(evt);
     }
     function openWithBrowser() {
-        const menu = document.querySelector("div#qContextMenu");
+        const menu = document.querySelector("div.q-context-menu");
         if (menu && menu.children) {
             for (const child of menu.children) {
                 if (child.textContent === "使用浏览器打开") {
