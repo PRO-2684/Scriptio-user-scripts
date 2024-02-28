@@ -303,8 +303,13 @@
                         }
                         break;
                     }
-                    // case "com.tencent.qzone.albumInvite": { // QQ 空间说说
-                    // }
+                    case "com.tencent.qzone.albumInvite": { // QQ 空间说说
+                        const detail = data.meta?.albumData;
+                        const url = new URL(detail?.h5Url);
+                        const qq = url.searchParams.get("u") || "未知 QQ";
+                        final = `[QQ 空间] ${detail?.title} (${qq})\n${detail?.desc}`;
+                        break;
+                    }
                     case "com.tencent.gamecenter.gameshare": { // 游戏分享
                         final = "[游戏分享] " + data.prompt || "";
                         break;
