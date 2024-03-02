@@ -149,9 +149,9 @@
                                 adminName = subData.adminRemark || subData.adminNick;
                                 break;
                             }
-                            case 2: { // Disband group
+                            case 2: // Disband group
+                            case 5: // Rename group
                                 break;
-                            }
                             case 8: { // Shut up someone/all
                                 const shutUpData = subData.shutUp;
                                 adminUin = shutUpData.admin.uid;
@@ -239,9 +239,13 @@
                 switch (data.app) {
                     case "com.tencent.structmsg": { // 结构化消息 (链接分享)
                         const detail = data.meta?.news;
-                        const title = truncate(detail?.tag);
-                        const desc = truncate(detail?.title);
-                        final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        const from = truncate(detail?.tag);
+                        const title = truncate(detail?.title);
+                        const desc = truncate(detail?.desc);
+                        final = from && title ? `[${from}] ${title}` : data.prompt || "";
+                        if (desc) {
+                            final += `\n${desc}`;
+                        }
                         break;
                     }
                     case "com.tencent.miniapp_01": { // 小程序
