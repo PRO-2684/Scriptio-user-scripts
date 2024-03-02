@@ -3,11 +3,30 @@
 
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
-    const minHoverTime = 500; // Minimum hover time before fetching link info
-    const MAXLEN = 200;
+    const DURATION = 500; // Hover time before fetching link info (ms)
+    const MAXLEN = 200; // Maximum length of title and description
+    const GRADIENT = "rgba(255, 0, 0, 1), rgba(255, 0, 180, 1), rgba(0, 100, 200, 1)"; // Gradient color for hovered links
+    const HEIGHT = "1.3px"; // Height of the underline
     // const log = console.log.bind(console, "[Link Preview]");
     const log = () => {};
     let enabled = false;
+    const style = document.head.appendChild(document.createElement("style"));
+    style.id = "scriptio-link-preview";
+    style.textContent = `
+    /* Adapted from https://codepen.io/michellebarker/pen/BapoQNj */
+    .text-link {
+        text-decoration: none !important;
+        background:
+            linear-gradient(to right, currentcolor, currentcolor),
+            linear-gradient(to right, ${GRADIENT});
+        background-size: 100% ${HEIGHT}, 0 ${HEIGHT};
+        background-position: 100% 100%, 0 100%;
+        background-repeat: no-repeat;
+        transition: color ${DURATION}ms, background-size ${DURATION}ms !important;
+    }
+    .text-link.link-preview-awaiting:hover {
+        background-size: 0 ${HEIGHT}, 100% ${HEIGHT};
+    }`;
     function truncate(s) { // Truncate a string so it doesn't take too much space
         if (s.length > MAXLEN) {
             return s.slice(0, MAXLEN) + "...";
@@ -40,13 +59,13 @@
     async function onHover() {
         const url = this?.__VUE__?.[0]?.props?.content;
         const timer = window.setTimeout(async () => {
-            this.title = "正在加载链接预览，鼠标不再显示进度后再次悬浮即可查看";
             this.style.cursor = "progress";
             this.title = await getLinkInfo(url);
             this.style.cursor = "";
+            this.classList.remove("link-preview-awaiting");
             this.removeEventListener("mouseover", onHover);
             log("Link preview fetched for", url);
-        }, minHoverTime);
+        }, DURATION);
         log("Set timeout", timer);
         this.addEventListener("mouseout", () => {
             window.clearTimeout(timer);
@@ -56,6 +75,7 @@
     function processLink(link) {
         const url = link?.__VUE__?.[0]?.props?.content;
         if (!url || !(url.startsWith("http://") || url.startsWith("https://"))) return;
+        link.classList.add("link-preview-awaiting");
         link.addEventListener("mouseover", onHover);
     }
     function linkPreview(component) {
@@ -70,6 +90,7 @@
         if (enabled) return;
         window.__VUE_MOUNT__.push(linkPreview);
         enabled = true;
+        style.disabled = false;
     }
     function disable() {
         if (!enabled) return;
@@ -78,6 +99,7 @@
             window.__VUE_MOUNT__.splice(index, 1);
         }
         enabled = false;
+        style.disabled = true;
     }
     if (window.__VUE_MOUNT__) {
         enable();
