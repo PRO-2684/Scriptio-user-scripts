@@ -86,6 +86,7 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
     - 群成员变动提示
     - 禁言提示
 - 撤回提示补全“自定义撤回消息”
+- 查看过期的引用消息的发送者与时间
 
 ![撤回提示补全](./images/inspectio-revokeElement.jpg)
 

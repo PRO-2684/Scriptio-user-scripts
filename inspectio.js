@@ -1,4 +1,4 @@
-// 添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
+// 🔎 添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
 // @run-at main, chat, record, forward
 
 (function () {
@@ -108,6 +108,15 @@
                     final += ` (x${data.chainCount})`;
                 }
                 return final;
+            }
+            case 7: { // replyElement
+                const data = msgRecEl.replyElement;
+                const srcExpired = data.sourceMsgExpired || data.sourceMsgIdInRecords === "0";
+                if (srcExpired) {
+                    return `引用消息未找到/已过期\n发送者: ${data.senderUid}\n发送时间: ${(new Date(data.replyMsgTime * 1000)).toLocaleString("zh-CN")}`;
+                } else {
+                    return "";
+                }
             }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
