@@ -328,12 +328,20 @@
                         break;
                     }
                     case "com.tencent.troopsharecard": { // 推荐群聊
-                        const url = data.meta?.contact?.jumpUrl;
+                        const subData = data.meta?.contact;
+                        const url = subData?.jumpUrl;
                         final = data.prompt;
                         if (url) {
+                            const groupName = subData?.nickname;
+                            if (groupName) {
+                                final += `: ${groupName}`;
+                            }
                             const qq = new URL(url).searchParams.get("group_code");
                             if (qq) {
                                 final += ` (${qq})`;
+                            }
+                            if (subData?.contact) {
+                                final += `\n${subData.contact}`;
                             }
                             if (container) {
                                 final = "**Alt+Click 以复制邀请链接**\n" + final;
@@ -442,6 +450,16 @@
                         }
                     }
                 }
+                return "";
+            }
+            case 21: { // avRecordElement (通话)
+                const data = msgRecEl.avRecordElement;
+                const time = parseInt(data.time) / 1000;
+                const type = data.mainType === 1 ? "语音" : "视频";
+                const status = time ? `通话时长: ${time}s` : "未接听";
+                const tip = `${type}通话 (${status})`;
+                const container = el.querySelector(".msg-content-container.av-message__container");
+                setTip(container, tip);
                 return "";
             }
             default: {
