@@ -112,11 +112,8 @@
             case 7: { // replyElement
                 const data = msgRecEl.replyElement;
                 const srcExpired = data.sourceMsgExpired || data.sourceMsgIdInRecords === "0";
-                if (srcExpired) {
-                    return `引用消息未找到/已过期\n发送者: ${data.senderUid}\n发送时间: ${(new Date(data.replyMsgTime * 1000)).toLocaleString("zh-CN")}`;
-                } else {
-                    return "";
-                }
+                const start = srcExpired ? "引用消息未找到/已过期\n" : "";
+                return `${start}发送者: ${data.senderUid}\n发送时间: ${(new Date(data.replyMsgTime * 1000)).toLocaleString("zh-CN")}`;
             }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
