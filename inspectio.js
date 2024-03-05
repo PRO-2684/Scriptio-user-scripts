@@ -254,10 +254,17 @@
                         }
                         break;
                     }
-                    case "com.tencent.miniapp_01": { // 小程序
+                    case "com.tencent.miniapp_01": { // 小程序 1
                         const detail = data.meta?.detail_1;
                         const title = truncate(detail?.title);
                         const desc = truncate(detail?.desc);
+                        final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        break;
+                    }
+                    case "com.tencent.miniapp.lua": { // 小程序 2
+                        const detail = data.meta?.miniapp;
+                        const title = truncate(detail?.tag);
+                        const desc = truncate(detail?.title);
                         final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
                         break;
                     }
