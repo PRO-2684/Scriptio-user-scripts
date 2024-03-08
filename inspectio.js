@@ -195,6 +195,8 @@
                         parts.forEach((part) => {
                             if (part.type === "qq") {
                                 queue.push([part.nm, validQQ(part.uin) ? part.uin : uinToQQ(part.uid)]);
+                            } else if (part.type === "url" && part.jp === "5") {
+                                queue.push([part.txt, part.param[0]]);
                             }
                         });
                         if (!container) return "";
@@ -263,7 +265,7 @@
                     }
                     case "com.tencent.miniapp.lua": { // 小程序 2
                         const detail = data.meta?.miniapp;
-                        const title = truncate(detail?.tag);
+                        const title = truncate(detail?.source || detail?.tag || "未知小程序");
                         const desc = truncate(detail?.title);
                         final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
                         break;
