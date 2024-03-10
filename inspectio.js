@@ -432,7 +432,13 @@
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
                 el?.setAttribute("data-summary", data.faceName);
-                return `${data.faceName} (${data.imageWidth} x ${data.imageHeight})`;
+                el?.addEventListener("click", (e) => {
+                    if (e.altKey) {
+                        e.stopImmediatePropagation();
+                        scriptio.open("link", data.staticFacePath);
+                    }
+                });
+                return `**Alt+Click 以在外部程序中打开图片**\n${data.faceName} (${data.imageWidth} x ${data.imageHeight})`;
             }
             case 16: { // multiForwardMsgElement
                 const data = msgRecEl.multiForwardMsgElement;
