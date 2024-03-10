@@ -73,6 +73,7 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 - 被艾特的 QQ 号
 - 表情/表情包/图片的摘要、长宽
+    - ![表情包摘要](./images/inspectio-showSummary.jpg)
 - 图片文件名、尺寸、占用大小以及网址
 - 视频文件名、时长以及占用大小
 - 红包领取信息
@@ -86,10 +87,9 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
     - 群成员变动提示
     - 禁言提示
 - 撤回提示补全“自定义撤回消息”
+    - ![撤回提示补全](./images/inspectio-revokeElement.jpg)
 - 查看过期的引用消息的发送者与时间
 - 通话信息的时长 (精确到毫秒)
-
-![撤回提示补全](./images/inspectio-revokeElement.jpg)
 
 ## [link-preview](./link-preview.js)
 

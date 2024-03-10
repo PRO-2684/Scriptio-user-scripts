@@ -50,7 +50,7 @@
         el.toggleAttribute(tipAttr, true);
     }
     // Get description for each element
-    function getDesc(msgRecEl, el) { // Input: one of `.props.msgRecord.elements` and `.message` element
+    function getDesc(msgRecEl, msgEl, el) { // Input: one of `.props.msgRecord.elements`, `.message` element and current element
         if (!msgRecEl) return "";
         switch (msgRecEl.elementType) {
             case 1: { // textElement
@@ -72,6 +72,11 @@
                 const summary = data.summary;
                 const fileName = data.fileName;
                 const url = data.originImageUrl ? "https://gchat.qpic.cn" + data.originImageUrl : "图片已过期";
+                if (summary && summary !== "[动画表情]") {
+                    el?.setAttribute("data-summary", summary);
+                } else {
+                    el?.setAttribute("data-summary", "");
+                }
                 return (summary ? `${truncate(summary)} (${info})` : info) + `\n${fileName}\n${url}`;
             }
             case 3: { // fileElement
@@ -79,8 +84,8 @@
                 const optionalDimension = data.picWidth && data.picHeight ? ` (${data.picWidth} x ${data.picHeight})` : "";
                 const optionalPath = data.filePath ? `\nPath: ${data.filePath}` : "";
                 const tip = `${data.fileName}${optionalDimension}\nSize: ${data.fileSize} Bytes\nMD5: ${data.fileMd5.toUpperCase()}${optionalPath}`;
-                setTip(el.querySelector(".file-element"), tip);
-                el.querySelector(".file-element .file-name")?.removeAttribute("title");
+                setTip(msgEl.querySelector(".file-element"), tip);
+                msgEl.querySelector(".file-element .file-name")?.removeAttribute("title");
                 return "";
             }
             case 4: { // pttElement
@@ -117,7 +122,7 @@
             }
             case 8: { // grayTipElement
                 const data = msgRecEl.grayTipElement;
-                const container = el.querySelector(".gray-tip-content.gray-tip-element");
+                const container = msgEl.querySelector(".gray-tip-content.gray-tip-element");
                 switch (data.subElementType) {
                     case 1: { // revokeElement
                         const subData = data.revokeElement;
@@ -237,7 +242,7 @@
                 const raw = msgRecEl.arkElement?.bytesData;
                 if (!raw) return "";
                 const data = JSON.parse(raw);
-                const container = el.querySelector(".ark-msg-content-container .ark-item-container");
+                const container = msgEl.querySelector(".ark-msg-content-container .ark-item-container");
                 container?.addEventListener("click", (e) => {
                     if (e.shiftKey) { // Shift+Click to copy raw code
                         e.stopImmediatePropagation();
@@ -281,7 +286,7 @@
                         const detail = data.meta?.detail;
                         const fileName = detail?.uniseq;
                         const resId = detail?.resid;
-                        const container = el.querySelector(".forward-msg");
+                        const container = msgEl.querySelector(".forward-msg");
                         let final = "";
                         if (fileName) {
                             final += `fileName/uniseq: ${fileName}\n`;
@@ -426,6 +431,7 @@
             }
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
+                el?.setAttribute("data-summary", data.faceName);
                 return `${data.faceName} (${data.imageWidth} x ${data.imageHeight})`;
             }
             case 16: { // multiForwardMsgElement
@@ -433,7 +439,7 @@
                 const fileName = data.fileName;
                 const resId = data.resId;
                 const xml = data.xmlContent;
-                const container = el.querySelector(".forward-msg");
+                const container = msgEl.querySelector(".forward-msg");
                 let final = "";
                 if (fileName) {
                     final += `fileName/uniseq: ${fileName}\n`;
@@ -464,7 +470,7 @@
                 const type = data.mainType === 1 ? "语音" : "视频";
                 const status = time ? `通话时长: ${time}s` : "未接听";
                 const tip = `${type}通话 (${status})`;
-                const container = el.querySelector(".msg-content-container.av-message__container");
+                const container = msgEl.querySelector(".msg-content-container.av-message__container");
                 setTip(container, tip);
                 return "";
             }
@@ -475,26 +481,40 @@
     }
     // Process message component
     function inspectio(component) {
-        const el = component?.vnode?.el;
-        if (!el?.classList?.contains("message")) return;
+        const msgEl = component?.vnode?.el;
+        if (!msgEl?.classList?.contains("message")) return;
         function update() {
             const msgRecEls = component?.props?.msgRecord?.elements;
-            const container = el.querySelector(".message-content__wrapper > div > div");
+            const container = msgEl.querySelector(".message-content__wrapper > div > div");
             if (!msgRecEls?.length) return;
             for (let i = 0; i < msgRecEls.length; i++) {
                 const msgRecEl = msgRecEls[i];
-                const desc = getDesc(msgRecEl, el);
-                const dom = container?.children[i];
-                if (desc && dom) {
-                    setTip(dom, desc);
+                const el = container?.children[i];
+                const desc = getDesc(msgRecEl, msgEl, el);
+                if (desc && el) {
+                    setTip(el, desc);
                 }
             }
         }
         component.proxy.$watch("$props.msgRecord.elements", update, { immediate: true, flush: "post" });
     }
+    const style = document.head.appendChild(document.createElement("style"));
+    style.id = "inspectio-style";
+    style.textContent = `
+    .image.pic-element::before, .image.market-face-element::before {
+        content: attr(data-summary);
+        position: absolute;
+        top: 1em;
+        left: 0;
+        color: var(--on_bg_text);
+        opacity: 0.6;
+        font-size: var(--font_size_1);
+        background: white;
+    }`;
     function enable() {
         if (enabled) return;
         window.__VUE_MOUNT__.push(inspectio);
+        style.disabled = false;
         enabled = true;
     }
     function disable() {
@@ -503,6 +523,7 @@
         if (index > -1) {
             window.__VUE_MOUNT__.splice(index, 1);
         }
+        style.disabled = true;
         enabled = false;
     }
     if (window.__VUE_MOUNT__) {
