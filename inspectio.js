@@ -505,17 +505,25 @@
         component.proxy.$watch("$props.msgRecord.elements", update, { immediate: true, flush: "post" });
     }
     const style = document.head.appendChild(document.createElement("style"));
-    style.id = "inspectio-style";
+    style.id = "scriptio-inspectio";
     style.textContent = `
-    .image.pic-element::before, .image.market-face-element::before {
+    .image.pic-element::before, .image.market-face-element::before, .lottie::before {
         content: attr(data-summary);
         position: absolute;
         top: 1em;
-        left: 0;
+        left: 0.5em;
         color: var(--on_bg_text);
         opacity: 0.6;
         font-size: var(--font_size_1);
-        background: white;
+    }
+    .lottie::before {
+        content: attr(title);
+        position: absolute;
+        top: 0;
+        left: 0.3em;
+        color: var(--on_bg_text);
+        opacity: 0.6;
+        font-size: var(--font_size_1);
     }`;
     function enable() {
         if (enabled) return;
