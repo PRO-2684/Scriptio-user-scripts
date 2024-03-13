@@ -2,7 +2,6 @@
 // @run-at main, chat
 
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     let enabled = false;
     function relaySelf(component) {
         const el = component?.vnode?.el;
@@ -35,14 +34,7 @@
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });
     }
-    window.addEventListener("scriptio-toggle", (event) => {
-        const path = event.detail.path;
-        if (path === self) {
-            if (event.detail.enabled) {
-                enable();
-            } else {
-                disable();
-            }
-        }
-    });
+    scriptio_toolkit.listen((v) => {
+        v ? enable() : disable();
+    }, false);
 })();

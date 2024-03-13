@@ -67,12 +67,5 @@
         }
         listening = enabled;
     }
-    window.addEventListener("scriptio-toggle", (event) => {
-        const path = event.detail.path;
-        console.log(path);
-        if (path === self) {
-            toggle(event.detail.enabled);
-        }
-    });
-    toggle(true);
+    scriptio_toolkit.listen(toggle, true);
 })();

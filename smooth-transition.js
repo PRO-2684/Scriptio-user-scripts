@@ -1,7 +1,6 @@
 // 为页面间导航添加平滑过渡动画
 // @run-at main, setting
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     const page = location.hash;
     const style = document.createElement("style");
     style.textContent = `
@@ -49,13 +48,7 @@
         // }
     }
     enable();
-    window.addEventListener("scriptio-toggle", (event) => {
-        const path = event.detail.path;
-        if (path !== self) return;
-        if (event.detail.enabled) {
-            enable();
-        } else {
-            disable();
-        }
-    });
+    scriptio_toolkit.listen((v) => {
+        v ? enable() : disable();
+    }, false);
 })();

@@ -2,7 +2,6 @@
 // @run-at main, chat, record, forward
 
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     const DURATION = 500; // Hover time before fetching link info (ms)
     const MAXLEN = 200; // Maximum length of title and description
     const GRADIENT = "rgba(255, 0, 0, 1), rgba(255, 0, 180, 1), rgba(0, 100, 200, 1)"; // Gradient color for hovered links
@@ -106,14 +105,7 @@
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });
     }
-    window.addEventListener("scriptio-toggle", (event) => {
-        const path = event.detail.path;
-        if (path === self) {
-            if (event.detail.enabled) {
-                enable();
-            } else {
-                disable();
-            }
-        }
-    });
+    scriptio_toolkit.listen((enabled) => {
+        enabled ? enable() : disable();
+    }, false);
 })();

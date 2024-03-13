@@ -2,7 +2,6 @@
 // @run-at main, chat, record, forward
 
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
     const MAXLEN = 100;
     let enabled = false;
@@ -560,14 +559,7 @@
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });
     }
-    window.addEventListener("scriptio-toggle", (event) => {
-        const path = event.detail.path;
-        if (path === self) {
-            if (event.detail.enabled) {
-                enable();
-            } else {
-                disable();
-            }
-        }
-    });
+    scriptio_toolkit.listen((v) => {
+        v ? enable() : disable();
+    }, false);
 })();

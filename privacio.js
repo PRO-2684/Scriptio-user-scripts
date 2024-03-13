@@ -1,7 +1,6 @@
 // 保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持
 
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     let enabled = false;
     const blacklist = new Set([ // Domain-specific blacklist
         "h.trace.qq.com",
@@ -38,14 +37,7 @@
     } else {
         window.addEventListener("fetch-hooked", enable, { once: true });
     }
-    window.addEventListener("scriptio-toggle", (event) => {
-        const path = event.detail.path;
-        if (path === self) {
-            if (event.detail.enabled) {
-                enable();
-            } else {
-                disable();
-            }
-        }
-    });
+    scriptio_toolkit.listen((v) => {
+        v ? enable() : disable();
+    }, false);
 })();
