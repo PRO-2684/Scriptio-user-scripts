@@ -112,6 +112,10 @@
                 if (data.chainCount) {
                     final += ` (x${data.chainCount})`;
                 }
+                el?.setAttribute("data-summary", final);
+                if (data.randomType === 1) {
+                    final += `\n随机结果: ${data.resultId}`;
+                }
                 return final;
             }
             case 7: { // replyElement
@@ -507,7 +511,7 @@
     const style = document.head.appendChild(document.createElement("style"));
     style.id = "scriptio-inspectio";
     style.textContent = `
-    .image.pic-element::before, .image.market-face-element::before, .lottie::before {
+    .image.pic-element::before, .image.market-face-element::before {
         content: attr(data-summary);
         position: absolute;
         top: 1em;
@@ -517,7 +521,7 @@
         font-size: var(--font_size_1);
     }
     .lottie::before {
-        content: attr(title);
+        content: attr(data-summary);
         position: absolute;
         top: 0;
         left: 0.3em;
