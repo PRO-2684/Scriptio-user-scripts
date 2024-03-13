@@ -187,6 +187,14 @@
                         }
                         return "";
                     }
+                    case 10: { // fileReceiptElement
+                        const subData = data.fileReceiptElement;
+                        const fname = subData.fileName;
+                        if (fname) {
+                            setTip(container, `文件名: ${fname}`);
+                        }
+                        return "";
+                    }
                     case 12: { // xmlElement
                         const subData = data.xmlElement;
                         setTip(container, subData.content);
@@ -222,6 +230,9 @@
                                 queue.shift();
                             }
                         }
+                        return "";
+                    }
+                    default: {
                         return "";
                     }
                 }
