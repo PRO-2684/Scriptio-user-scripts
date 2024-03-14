@@ -111,6 +111,10 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
     - 目前收集到的可在浏览器打开的：`com_tencent_miniapp_01` (Bilibili 分享?)
 - 若失败，则退回至左键
 
+## [pangu](./pangu.js)
+
+编辑框内按下 Ctrl+P 后，自动在中英文、中文与数字之间添加空格，并进行合适的标点符号处理。(改编自 [Pangu.js](https://github.com/vinta/pangu.js/))
+
 ## [plugin-icon](./plugin-icon.js)
 
 设置界面展示插件图标（若有）。
