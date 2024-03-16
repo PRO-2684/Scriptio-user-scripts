@@ -524,7 +524,7 @@
                 const label = component?.proxy?.abstractAriaLabel;
                 if (label) {
                     const summary = el.querySelector(".recent-contact-abstract");
-                    summary.title = label;
+                    setTip(summary, label);
                 }
             }
             function updateInfo() {
@@ -533,13 +533,13 @@
                 const optionalUin = (data?.uin && data?.uin !== "0") ? ` (${data.uin})` : "";
                 const title = name + optionalUin;
                 const info = el.querySelector(".main-info > span");
-                info.title = title;
+                setTip(info, title);
             }
             function updateUnread() {
                 const cnt = component?.proxy?.unreadCnt;
                 const bubble = el.querySelector(".summary-bubble > div");
                 if (cnt) {
-                    bubble.title = cnt.toString();
+                    setTip(bubble, cnt.toString());
                 } else {
                     bubble.removeAttribute("title");
                 }
