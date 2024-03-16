@@ -12,6 +12,9 @@
         }
         return s;
     }
+    function removePrefix(s, p) {
+        return s.startsWith(p) ? s.slice(p.length) : s;
+    }
     function b64decode(s) {
         return s ? decodeURIComponent(escape(window.atob(s))) : "";
     }
@@ -521,7 +524,20 @@
             const container = el.querySelector(".list-item__container");
             container?.classList.remove("item-dragging-over"); // Allow the tip to be shown
             function updateAbstract() {
-                const label = component?.proxy?.abstractAriaLabel;
+                const data = component?.proxy?.abstracts;
+                let label = "";
+                for (const part of data) {
+                    switch (part.type) {
+                        case "text":
+                            label += part.content;
+                            break;
+                        case "face":
+                            label += `[${removePrefix(part.faceText, "/")}]`;
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 if (label) {
                     const summary = el.querySelector(".recent-contact-abstract");
                     setTip(summary, label);
@@ -544,7 +560,7 @@
                     bubble.removeAttribute("title");
                 }
             }
-            component.proxy.$watch("abstractAriaLabel", updateAbstract, { immediate: true, flush: "post" });
+            component.proxy.$watch("abstracts", updateAbstract, { immediate: true, flush: "post" });
             component.proxy.$watch("contactItemData", updateInfo, { immediate: true, flush: "post" });
             component.proxy.$watch("unreadCnt", updateUnread, { immediate: true, flush: "post" });
         }
