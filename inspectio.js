@@ -15,6 +15,13 @@
     function removePrefix(s, p) {
         return s.startsWith(p) ? s.slice(p.length) : s;
     }
+    function formatFace(s) {
+        if (s.startsWith("[") && s.endsWith("]")) {
+            return s;
+        } else {
+            return `[${removePrefix(s, "/")}]`
+        }
+    }
     function b64decode(s) {
         return s ? decodeURIComponent(escape(window.atob(s))) : "";
     }
@@ -106,9 +113,9 @@
                 if (faceMap) {
                     const face = faceMap[id];
                     if (face?.name) {
-                        final += `[${face.name}]`;
+                        final += formatFace(face.name);
                     } else {
-                        final += face?.faceText || `[未知表情#${id}]`;
+                        final += formatFace(face?.faceText) || `[未知表情#${id}]`;
                     }
                 }
                 if (data.chainCount) {
@@ -532,7 +539,7 @@
                             label += part.content;
                             break;
                         case "face":
-                            label += `[${removePrefix(part.faceText, "/")}]`;
+                            label += formatFace(part.faceText);
                             break;
                         default:
                             break;
