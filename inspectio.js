@@ -112,7 +112,7 @@
                     final += ` (x${data.chainCount})`;
                 }
                 el?.setAttribute("data-summary", final);
-                if (data.randomType === 1) {
+                if (data.randomType === 1 && data.resultId) {
                     final += `\n随机结果: ${data.resultId}`;
                 }
                 return final;
@@ -499,24 +499,55 @@
             }
         }
     }
-    // Process message component
+    // Process component
     function inspectio(component) {
-        const msgEl = component?.vnode?.el;
-        if (!msgEl?.classList?.contains("message")) return;
-        function update() {
-            const msgRecEls = component?.props?.msgRecord?.elements;
-            const container = msgEl.querySelector(".message-content__wrapper > div > div");
-            if (!msgRecEls?.length) return;
-            for (let i = 0; i < msgRecEls.length; i++) {
-                const msgRecEl = msgRecEls[i];
-                const el = container?.children[i];
-                const desc = getDesc(msgRecEl, msgEl, el);
-                if (desc && el) {
-                    setTip(el, desc);
+        const el = component?.vnode?.el;
+        if (el?.classList?.contains("message")) {
+            function updateAbstract() {
+                const msgRecEls = component?.props?.msgRecord?.elements;
+                const container = el.querySelector(".message-content__wrapper > div > div");
+                if (!msgRecEls?.length) return;
+                for (let i = 0; i < msgRecEls.length; i++) {
+                    const msgRecEl = msgRecEls[i];
+                    const subEl = container?.children[i];
+                    const desc = getDesc(msgRecEl, el, subEl);
+                    if (desc && subEl) {
+                        setTip(subEl, desc);
+                    }
                 }
             }
+            component.proxy.$watch("$props.msgRecord.elements", updateAbstract, { immediate: true, flush: "post" });
+        } else if (el?.classList?.contains("recent-contact-item") && component?.proxy?.abstractAriaLabel) {
+            const container = el.querySelector(".list-item__container");
+            container?.classList.remove("item-dragging-over"); // Allow the tip to be shown
+            function updateAbstract() {
+                const label = component?.proxy?.abstractAriaLabel;
+                if (label) {
+                    const summary = el.querySelector(".recent-contact-abstract");
+                    summary.title = label;
+                }
+            }
+            function updateInfo() {
+                const data = component?.proxy?.contactItemData;
+                const name = data?.name;
+                const optionalUin = (data?.uin && data?.uin !== "0") ? ` (${data.uin})` : "";
+                const title = name + optionalUin;
+                const info = el.querySelector(".main-info > span");
+                info.title = title;
+            }
+            function updateUnread() {
+                const cnt = component?.proxy?.unreadCnt;
+                const bubble = el.querySelector(".summary-bubble > div");
+                if (cnt) {
+                    bubble.title = cnt.toString();
+                } else {
+                    bubble.removeAttribute("title");
+                }
+            }
+            component.proxy.$watch("abstractAriaLabel", updateAbstract, { immediate: true, flush: "post" });
+            component.proxy.$watch("contactItemData", updateInfo, { immediate: true, flush: "post" });
+            component.proxy.$watch("unreadCnt", updateUnread, { immediate: true, flush: "post" });
         }
-        component.proxy.$watch("$props.msgRecord.elements", update, { immediate: true, flush: "post" });
     }
     const style = document.head.appendChild(document.createElement("style"));
     style.id = "scriptio-inspectio";

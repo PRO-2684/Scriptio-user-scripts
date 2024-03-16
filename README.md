@@ -90,6 +90,8 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
     - ![撤回提示补全](./images/inspectio-revokeElement.jpg)
 - 查看过期的引用消息的发送者与时间
 - 通话信息的时长 (精确到毫秒)
+- 聊天列表：最近消息的文字内容、完整联系人名与 QQ 号、未读消息数
+    - ![聊天列表最近消息](./images/inspectio-recentMessage.jpg)
 
 ## [link-preview](./link-preview.js)
 
