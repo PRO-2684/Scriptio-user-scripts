@@ -104,10 +104,12 @@
         const newHtml = doc.documentElement.outerHTML;
         const viewFragment = editor.data.processor.toView(newHtml);
         const modelFragment = editor.data.toModel(viewFragment);
-        editor.model.change(writer => {
-            const root = editor.model.document.getRoot();
-            writer.remove(writer.createRangeIn(root));
-            writer.insert(modelFragment, root);
+        document.startViewTransition(() => {
+            editor.model.change(writer => {
+                const root = editor.model.document.getRoot();
+                writer.remove(writer.createRangeIn(root));
+                writer.insert(modelFragment, root);
+            });
         });
     }
 
