@@ -1,4 +1,4 @@
-// 消息显示时间，鼠标悬停显示详细时间，双击复制时间戳，需要 hook-vue.js 的支持
+// 消息显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要 hook-vue.js 的支持
 // @run-at main, chat, record, forward
 
 (function () {
@@ -14,10 +14,11 @@
             const fullTime = timestamp ? date.toLocaleString("zh-CN") : "未知时间";
             const simpleTime = timestamp ? date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "未知时间";
             el.querySelector(".message-time")?.remove();
+            const seq = props?.msgRecord?.msgSeq;
             const timeEl = document.createElement("span");
             timeEl.classList.add("message-time");
             timeEl.textContent = simpleTime;
-            timeEl.title = fullTime;
+            timeEl.title = fullTime + (seq ? `\n#${seq}` : "");
             const parent = el.querySelector(".message-content__wrapper") || el.querySelector(".gray-tip-content.gray-tip-element");
             const position = el.querySelector(".message-container--align-right") ? "afterbegin" : "beforeend";
             parent?.insertAdjacentElement(position, timeEl);
@@ -25,7 +26,7 @@
                 navigator?.clipboard?.writeText(String(timestamp));
             });
         }
-        component.proxy.$watch("$props.msgRecord.elements", update, { immediate: true, flush: "post" });
+        component.proxy.$watch("$props.msgRecord.msgTime", update, { immediate: true, flush: "post" });
     }
     function enable() {
         if (enabled) return;

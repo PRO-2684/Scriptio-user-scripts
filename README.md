@@ -155,7 +155,7 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 ## [show-time](./show-time.js)
 
-消息后显示时间，鼠标悬停显示详细时间，双击复制时间戳，需要 hook-vue.js 的支持。*关闭/打开可能需要切换一次聊天窗口/上下滚动几屏才能生效。*
+消息后显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要 hook-vue.js 的支持。*关闭/打开可能需要切换一次聊天窗口/上下滚动几屏才能生效。*
 
 ![show-time](./images/show-time.jpg)
 
