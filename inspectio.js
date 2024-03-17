@@ -28,21 +28,9 @@
     function validQQ(qq) {
         return qq && qq !== "0";
     }
-    function getCurrentGroup() {
-        return parseInt(state?.aio_group?.curGroupCode);
-    }
-    function uinToQQ(uin) { // Input: uin; Output: qq (Only tries to find in the current group)
-        const groupCode = getCurrentGroup();
-        if (!groupCode || isNaN(groupCode)) return uin; // Not in a group - return uin as it is
-        const group = state?.common_GroupMembersNew?.groupMembersMap?.[groupCode]?.memberListInfo;
-        if (!group) return uin; // No group info - return uin as it is
-        const res = group.get(uin);
-        if (res) {
-            return res.uin;
-        } else {
-            return uin; // Fall back to uin if not found
-        }
-        // TODO: Also try to find in `common_Contact_buddy`
+    function uinToQQ(uin, msgEl) { // Input: uin & `.message` element; Output: qq (Only tries to find in the current group)
+        const info = msgEl.__VUE__?.[0]?.props?.getMemberInfoByUid(uin);
+        return info?.uin || uin;
     }
     function clickHandler(e) {
         if (e.ctrlKey) {
@@ -65,7 +53,7 @@
             case 1: { // textElement
                 const data = msgRecEl.textElement;
                 if (data.atType === 2) { // mention someone
-                    const account = validQQ(data.atUid) ? data.atUid : uinToQQ(data.atNtUid);
+                    const account = validQQ(data.atUid) ? data.atUid : uinToQQ(data.atNtUid, msgEl);
                     const content = data.content.startsWith("@") ? data.content.slice(1) : data.content;
                     return `${account} (${content})`;
                 } else if (data.atType === 1) { // mention all
@@ -141,11 +129,11 @@
                         const subData = data.revokeElement;
                         const senderUin = subData.origMsgSenderUid;
                         const operatorUin = subData.operatorUid;
-                        const sender = `${uinToQQ(senderUin)} (${subData.origMsgSenderMemRemark || subData.origMsgSenderNick})`;
+                        const sender = `${uinToQQ(senderUin, msgEl)} (${subData.origMsgSenderMemRemark || subData.origMsgSenderNick})`;
                         if (operatorUin === senderUin) {
                             setTip(container, sender);
                         } else {
-                            const operator = `${uinToQQ(operatorUin)} (${subData.operatorMemRemark || subData.operatorNick})`;
+                            const operator = `${uinToQQ(operatorUin, msgEl)} (${subData.operatorMemRemark || subData.operatorNick})`;
                             setTip(container, `发送者: ${sender}\n撤回者: ${operator}`);
                         }
                         const wording = subData.wording.trim();
@@ -191,7 +179,7 @@
                             }
                         }
                         if (adminUin) {
-                            const admin = `${uinToQQ(adminUin)} (${adminName})`;
+                            const admin = `${uinToQQ(adminUin, msgEl)} (${adminName})`;
                             setTip(container, `${extra}处理人: ${admin}`);
                         }
                         return "";
@@ -220,7 +208,7 @@
                         const queue = [];
                         parts.forEach((part) => {
                             if (part.type === "qq") {
-                                queue.push([part.nm, validQQ(part.uin) ? part.uin : uinToQQ(part.uid)]);
+                                queue.push([part.nm, validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)]);
                             } else if (part.type === "url" && part.jp === "5") {
                                 queue.push([part.txt, part.param[0]]);
                             }
