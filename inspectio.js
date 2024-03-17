@@ -354,17 +354,14 @@
                         const subData = data.meta?.contact;
                         const url = subData?.jumpUrl;
                         final = data.prompt;
+                        const groupName = subData?.nickname;
+                        if (groupName) {
+                            final += `: ${groupName}`;
+                        }
                         if (url) {
-                            const groupName = subData?.nickname;
-                            if (groupName) {
-                                final += `: ${groupName}`;
-                            }
                             const qq = new URL(url).searchParams.get("group_code");
                             if (qq) {
                                 final += ` (${qq})`;
-                            }
-                            if (subData?.contact) {
-                                final += `\n${subData.contact}`;
                             }
                             if (container) {
                                 final = "**Alt+Click 以复制邀请链接**\n" + final;
@@ -376,13 +373,17 @@
                                 }, { capture: true });
                             }
                         }
+                        if (subData?.contact) {
+                            final += `\n${subData.contact}`;
+                        }
                         break;
                     }
                     case "com.tencent.contact.lua": { // 推荐好友
                         const url = data.meta?.contact?.jumpUrl;
                         final = data.prompt;
                         if (url) {
-                            const qq = new URL(url).searchParams.get("uin");
+                            const urlObj = new URL(url);
+                            const qq = urlObj.searchParams.get("uin") ?? urlObj.searchParams.get("robot_uin");
                             if (qq) {
                                 final += ` (${qq})`;
                                 if (container) {
@@ -395,6 +396,9 @@
                                     }, { capture: true });
                                 }
                             }
+                        }
+                        if (data.meta?.contact?.contact) {
+                            final += `\n${data.meta.contact.contact}`;
                         }
                         break;
                     }
