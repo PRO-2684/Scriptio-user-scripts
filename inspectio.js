@@ -439,9 +439,15 @@
                         }
                         break;
                     }
-                    default:
+                    default: { // 尝试通配
+                        // com.tencent.channelrobot.smallpic
+                        const detail = data.meta?.detail;
                         final = data.prompt || "";
+                        final += detail?.title ? `\nTitle: ${detail.title}` : "";
+                        final += detail?.subTitle ? `\nSubtitle: ${detail.subTitle}` : "";
+                        final += detail?.desc ? `\nDesc: ${detail.desc}` : "";
                         break;
+                    }
                 }
                 return "**Shift+Click 以复制卡片消息代码**\n" + final;
             }
