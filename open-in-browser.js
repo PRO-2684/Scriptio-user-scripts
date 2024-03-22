@@ -38,6 +38,7 @@
         return false;
     }
     function handleClick(e) {
+        if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
         const ele = e.target;
         if (ele.tagName === "CANVAS" && ele.classList.contains("ark-view-message") && canOpenInBrowser.includes(ele.getAttribute("appmanagerid")) && !ele.classList.contains("no-browser-support")) {
             e.stopImmediatePropagation();

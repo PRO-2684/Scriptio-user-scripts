@@ -15,15 +15,30 @@
     function removePrefix(s, p) {
         return s.startsWith(p) ? s.slice(p.length) : s;
     }
-    function formatFace(s) {
+    function trimFace(s) {
         if (s.startsWith("[") && s.endsWith("]")) {
-            return s;
+            return s.slice(1, -1);
         } else {
-            return `[${removePrefix(s, "/")}]`
+            return removePrefix(s, "/");
         }
+    }
+    function formatFace(s) {
+        return `[${trimFace(s)}]`;
     }
     function b64decode(s) {
         return s ? decodeURIComponent(escape(window.atob(s))) : "";
+    }
+    const downloadLink = document.createElement("a");
+    function save(dataUrl, name) {
+        fetch(dataUrl).then(res => res.blob()).then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            const ext = blob.type.split("/")[1] || "txt";
+            const fname = `${name}.${ext}`;
+            downloadLink.href = blobUrl;
+            downloadLink.download = fname;
+            downloadLink.click();
+            URL.revokeObjectURL(blobUrl);
+        })
     }
     function validQQ(qq) {
         return qq && qq !== "0";
@@ -453,14 +468,15 @@
             }
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
-                el?.setAttribute("data-summary", data.faceName);
+                el?.setAttribute("data-summary", formatFace(data.faceName));
                 el?.addEventListener("click", (e) => {
                     if (e.altKey) {
                         e.stopImmediatePropagation();
-                        scriptio.open("link", data.staticFacePath);
+                        const img = el.querySelector("img");
+                        save(img.src, trimFace(data.faceName));
                     }
                 });
-                return `**Alt+Click 以在外部程序中打开图片**\n${data.faceName} (${data.imageWidth} x ${data.imageHeight})`;
+                return `**Alt+Click 以保存图片**\n${formatFace(data.faceName)} (${data.imageWidth} x ${data.imageHeight})`;
             }
             case 16: { // multiForwardMsgElement
                 const data = msgRecEl.multiForwardMsgElement;
