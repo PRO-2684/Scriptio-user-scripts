@@ -2,6 +2,10 @@
 
 我的 [Scriptio](https://github.com/PRO-2684/Scriptio) 用户脚本。
 
+## [heavy-toolbox](./heavy-toolbox.js)
+
+`Ctrl+D` 来体验重量工具箱。
+
 ## [hitokoto](./hitokoto.js)
 
 输入框占位符显示[一言](https://hitokoto.cn)，窗口隐藏或占位符不可见时不会刷新。实时响应。
