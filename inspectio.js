@@ -584,6 +584,12 @@
             component.proxy.$watch("abstracts", updateAbstract, { immediate: true, flush: "post" });
             component.proxy.$watch("contactItemData", updateInfo, { immediate: true, flush: "post" });
             component.proxy.$watch("unreadCnt", updateUnread, { immediate: true, flush: "post" });
+        } else if (el?.classList?.contains("buddy-like-btn") && component?.props?.totalLikeLimit) {
+            function showLikes() {
+                const likes = component?.props?.totalLikes;
+                setTip(el, likes.toString());
+            }
+            component.proxy.$watch("$props.totalLikes", showLikes, { immediate: true, flush: "post" });
         }
     }
     const style = document.head.appendChild(document.createElement("style"));
