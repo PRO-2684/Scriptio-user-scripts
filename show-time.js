@@ -5,7 +5,7 @@
     let enabled = false;
     function addTime(component) {
         const el = component?.vnode?.el;
-        if (!el?.classList?.contains("message")) return;
+        if (!el?.classList?.contains("message") || el?.hasAttribute("scale")) return;
         function update() {
             if (!enabled) return;
             const props = component.props;

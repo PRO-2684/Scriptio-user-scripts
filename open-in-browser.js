@@ -1,7 +1,6 @@
 // 小程序若可行则浏览器打开
 // @run-at main
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     const canOpenInBrowser = ["com_tencent_miniapp_01"];
     function randomPos(ele) {
         const rect = ele.getBoundingClientRect();
