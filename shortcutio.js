@@ -141,6 +141,11 @@
         default:
             break;
     }
+    keyDownWrapper(function (e) {
+        if (e.key === "F5") {
+            location.reload();
+        }
+    });
     function handleMouseDown(e) {
         log("mouse down", e.button);
         if (e.button === 3 || e.button === 4) {
