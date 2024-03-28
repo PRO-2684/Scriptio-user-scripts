@@ -111,15 +111,16 @@
             case 6: { // faceElement
                 const data = msgRecEl.faceElement;
                 const id = data.faceIndex;
-                const faceMap = state.common_QQFace?.dataMap;
+                const face = state.common_QQFace?.dataMap?.[id];
                 let final = "";
-                if (faceMap) {
-                    const face = faceMap[id];
+                if (face) {
                     if (face?.name) {
                         final += formatFace(face.name);
                     } else {
-                        final += formatFace(face?.faceText) || `[未知表情#${id}]`;
+                        final += formatFace(face?.faceText || `未知表情#${id}`);
                     }
+                } else if (data?.faceText) {
+                    final += formatFace(data.faceText);
                 }
                 if (data.chainCount) {
                     final += ` (x${data.chainCount})`;
@@ -222,10 +223,11 @@
                         if (!parts) return "";
                         const queue = [];
                         parts.forEach((part) => {
-                            if (part.type === "qq") {
-                                queue.push([part.nm, validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)]);
-                            } else if (part.type === "url" && part.jp === "5") {
-                                queue.push([part.txt, part.param[0]]);
+                            if (part.type === "qq") { // QQ
+                                queue.push([part.nm, `${validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)} (${part.txt})`]);
+                            } else if (part.type === "url") {
+                                if (part.jp === "5") queue.push([part.txt, `${part.param[0]} (${part.txt})`]); // QQ
+                                else queue.push([part.txt, part.jp]); // Link
                             }
                         });
                         if (!container) return "";
@@ -237,7 +239,7 @@
                             if (text === tuple[0]) {
                                 const span = document.createElement("span");
                                 span.textContent = text;
-                                setTip(span, `${tuple[1]} (${text})`);
+                                setTip(span, tuple[1]);
                                 node.replaceWith(span);
                                 queue.shift();
                             }
