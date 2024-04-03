@@ -224,15 +224,15 @@
                         const queue = [];
                         parts.forEach((part) => {
                             if (part.type === "qq") { // QQ
-                                queue.push([part.nm, `${validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)} (${part.txt})`]);
+                                queue.push([part.nm, `${validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)} (${part.nm})`]);
                             } else if (part.type === "url") {
                                 if (part.jp === "5") queue.push([part.txt, `${part.param[0]} (${part.txt})`]); // QQ
-                                else queue.push([part.txt, part.jp]); // Link
+                                else if (part.jp?.length > 1) queue.push([part.txt, part.jp]); // Link
                             }
                         });
                         if (!container) return "";
                         for (const node of container.childNodes) {
-                            if (node.nodeType !== Node.TEXT_NODE) continue;
+                            if (node.nodeType !== Node.TEXT_NODE && node.nodeType !== Node.ELEMENT_NODE) continue;
                             const text = node.textContent;
                             const tuple = queue[0];
                             if (!tuple) break;
