@@ -15,6 +15,14 @@
     css_word.id = "scriptio-hitokoto";
     css_word.textContent = sel + ' { --qq-editor-placeholder: "一言载入中..."}';
     document.head.appendChild(css_word);
+    const css_opa = document.createElement("style");
+    css_opa.id = "scriptio-hitokoto-opacity";
+    css_opa.textContent = sel + " { opacity: 0; }";
+    document.head.appendChild(css_opa);
+    const css_trans = document.createElement("style");
+    css_trans.id = "scriptio-hitokoto-transition";
+    css_trans.textContent = sel + ` { transition: opacity ${animation_duration}s ease-in-out; }`;
+    document.head.appendChild(css_trans);
     let timer = null;
     function shouldUpdate() {
         if (document.hidden) {
@@ -27,10 +35,10 @@
     async function trueUpdate() {
         const data = await (await fetch(api)).json();
         const hitokoto = `${data.hitokoto} —— ${data.from_who || data.from}`;
+        css_opa.disabled = false; // 使占位符透明
         window.setTimeout(() => {
-            document.startViewTransition(() => {
-                css_word.textContent = `${sel} { --qq-editor-placeholder: "${hitokoto}"; }`;
-            });
+            css_word.textContent = `${sel} { --qq-editor-placeholder: "${hitokoto}"; }`;
+            css_opa.disabled = true;
         }, animation_duration * 1000);
         log("Update hitokoto:", hitokoto);
         return true;
@@ -50,6 +58,9 @@
             window.clearInterval(timer);
             timer = null;
         }
+        css_word.disabled = !enabled;
+        css_opa.disabled = true;
+        css_trans.disabled = !enabled;
         log("Toggle hitokoto:", enabled);
     }
     scriptio_toolkit.listen(toggle, true);
