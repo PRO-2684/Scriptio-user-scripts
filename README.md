@@ -119,10 +119,6 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 编辑框内按下 Ctrl+P 后，自动在中英文、中文与数字之间添加空格，并进行合适的标点符号处理。(改编自 [Pangu.js](https://github.com/vinta/pangu.js/))
 
-## [plugin-icon](./plugin-icon.js)
-
-设置界面展示插件图标（若有）。
-
 ## [privacio](./privacio.js)
 
 保护你的隐私：通过拦截对特定域名的请求，从而阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持。此脚本仅能阻止渲染层的追踪，无法阻止主进程的追踪。目前已知可以阻止的域名：
