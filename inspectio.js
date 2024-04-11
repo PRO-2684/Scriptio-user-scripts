@@ -28,18 +28,6 @@
     function b64decode(s) {
         return s ? decodeURIComponent(escape(window.atob(s))) : "";
     }
-    const downloadLink = document.createElement("a");
-    function save(dataUrl, name) {
-        fetch(dataUrl).then(res => res.blob()).then(blob => {
-            const blobUrl = URL.createObjectURL(blob);
-            const ext = blob.type.split("/")[1] || "txt";
-            const fname = `${name}.${ext}`;
-            downloadLink.href = blobUrl;
-            downloadLink.download = fname;
-            downloadLink.click();
-            URL.revokeObjectURL(blobUrl);
-        })
-    }
     function validQQ(qq) {
         return qq && qq !== "0";
     }
@@ -471,14 +459,9 @@
             case 11: { // marketFaceElement
                 const data = msgRecEl.marketFaceElement;
                 el?.setAttribute("data-summary", formatFace(data.faceName));
-                el?.addEventListener("click", (e) => {
-                    if (e.altKey) {
-                        e.stopImmediatePropagation();
-                        const img = el.querySelector("img");
-                        save(img.src, trimFace(data.faceName));
-                    }
-                });
-                return `**Alt+Click 以保存图片**\n${formatFace(data.faceName)} (${data.imageWidth} x ${data.imageHeight})`;
+                el?.removeAttribute("draggable");
+                el?.removeAttribute("ondragstart");
+                return `${formatFace(data.faceName)} (${data.imageWidth} x ${data.imageHeight})`;
             }
             case 16: { // multiForwardMsgElement
                 const data = msgRecEl.multiForwardMsgElement;
