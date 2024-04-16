@@ -355,6 +355,27 @@
                         final = "[游戏分享] " + data.prompt || "";
                         break;
                     }
+                    case "com.tencent.qun.invite": { // 邀请加群
+                        const subData = data.meta?.news;
+                        const url = subData?.jumpUrl;
+                        final = subData?.desc;
+                        if (url) {
+                            const qq = new URL(url).searchParams.get("groupcode");
+                            if (qq) {
+                                final += ` (${qq})`;
+                            }
+                            if (container) {
+                                final = "**Alt+Click 以复制邀请链接**\n" + final;
+                                container.addEventListener("click", (e) => {
+                                    if (e.altKey) {
+                                        e.stopImmediatePropagation();
+                                        navigator?.clipboard?.writeText(url);
+                                    }
+                                }, { capture: true });
+                            }
+                        }
+                        break;
+                    }
                     case "com.tencent.troopsharecard": { // 推荐群聊
                         const subData = data.meta?.contact;
                         const url = subData?.jumpUrl;
