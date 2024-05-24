@@ -71,6 +71,9 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 添加各类提示信息，Ctrl+Click 可复制，包括：
 
+- 消息发送者的昵称、备注与 QQ 号
+    - 鼠标悬停在头像时显示
+    - 由于 QQ 的懒加载机制，可能部分非空字段也不会显示
 - 被艾特的 QQ 号
 - 表情/表情包/图片的摘要、长宽
     - ![表情包摘要](./images/inspectio-showSummary.jpg)

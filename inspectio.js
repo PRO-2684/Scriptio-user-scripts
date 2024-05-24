@@ -533,6 +533,23 @@
     function inspectio(component) {
         const el = component?.vnode?.el;
         if (el?.classList?.contains("message")) {
+            const avatar = el.querySelector(".message-container > .avatar-span");
+            if (avatar) {
+                let tip = "";
+                const nick = component?.props?.msgRecord?.sendNickName;
+                if (nick) {
+                    tip += `昵称: ${nick}`;
+                }
+                const remark = component?.props?.msgRecord?.sendRemarkName;
+                if (remark) {
+                    tip += `\n备注: ${remark}`;
+                }
+                const uin = component?.props?.msgRecord?.senderUin;
+                if (validQQ(uin)) {
+                    tip += `\nQQ: ${uin}`;
+                }
+                avatar.title = tip;
+            }
             function updateAbstract() {
                 const msgRecEls = component?.props?.msgRecord?.elements;
                 const container = el.querySelector(".message-content__wrapper > div > div");
