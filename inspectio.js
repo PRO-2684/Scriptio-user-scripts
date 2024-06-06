@@ -90,7 +90,9 @@
             }
             case 4: { // pttElement
                 const data = msgRecEl.pttElement;
-                return `${data.fileName} (${data.duration}s, ${data.fileSize} Bytes)`;
+                const optionalText = data.text ? `\n${data.text}` : "";
+                const tip = `${data.fileName} (${data.duration}s, ${data.fileSize} Bytes)${optionalText}`;
+                return tip;
             }
             case 5: { // videoElement
                 const data = msgRecEl.videoElement;
