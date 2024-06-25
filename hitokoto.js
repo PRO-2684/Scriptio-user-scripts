@@ -33,15 +33,23 @@
         }
     }
     async function trueUpdate() {
-        const data = await (await fetch(api)).json();
-        const hitokoto = `${data.hitokoto} —— ${data.from_who || data.from}`;
+        let hitokoto = "", flag = false;
+        try {
+            const data = await (await fetch(api)).json();
+            hitokoto = `${data.hitokoto} —— ${data.from_who || data.from}`;
+            flag = true;
+        } catch (e) {
+            log("Failed to fetch hitokoto:", e);
+            hitokoto = "一言加载失败...";
+            flag = false;
+        }
         css_opa.disabled = false; // 使占位符透明
         window.setTimeout(() => {
             css_word.textContent = `${sel} { --qq-editor-placeholder: "${hitokoto}"; }`;
             css_opa.disabled = true;
         }, animation_duration * 1000);
         log("Update hitokoto:", hitokoto);
-        return true;
+        return flag;
     }
     async function update() {
         if (!shouldUpdate()) {
