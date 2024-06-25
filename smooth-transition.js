@@ -1,5 +1,13 @@
-// 为页面间导航添加平滑过渡动画
-// @run-at main, setting
+// ==UserScript==
+// @name         Smooth Transition
+// @description  为页面间导航添加平滑过渡动画
+// @run-at       main, setting
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 (function () {
     const page = location.hash;
     const style = document.createElement("style");

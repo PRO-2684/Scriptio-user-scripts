@@ -1,5 +1,13 @@
-// 小程序若可行则浏览器打开
-// @run-at main
+// ==UserScript==
+// @name         Open in Browser
+// @description  小程序若可行则浏览器打开
+// @run-at       main, chat
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 (function () {
     const canOpenInBrowser = ["com_tencent_miniapp_01"];
     function randomPos(ele) {

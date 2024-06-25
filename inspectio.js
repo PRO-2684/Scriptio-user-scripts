@@ -1,5 +1,12 @@
-// 🔎 添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
-// @run-at main, chat, record, forward
+// ==UserScript==
+// @name         Inspectio 🔎
+// @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
+// @run-at       main, chat, record, forward
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;

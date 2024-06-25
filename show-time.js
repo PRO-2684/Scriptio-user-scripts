@@ -1,5 +1,12 @@
-// 消息显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要 hook-vue.js 的支持
-// @run-at main, chat, record, forward
+// ==UserScript==
+// @name         Show Time
+// @description  消息显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要 hook-vue.js 的支持
+// @run-at       main, chat, record, forward
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     let enabled = false;

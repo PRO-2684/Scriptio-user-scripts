@@ -163,3 +163,7 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 ## [smooth-transition](./smooth-transition.js)
 
 为页面间导航添加平滑过渡动画。
+
+## [toast](./toast.js)
+
+允许其它脚本调用 scriptio_toolkit.toast，需要 hook-vue.js 的支持。

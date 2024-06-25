@@ -1,4 +1,12 @@
-// 添加一些常用的快捷键
+// ==UserScript==
+// @name         Shortcutio
+// @description  添加一些常用的快捷键
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 (function () {
     const self = document.currentScript?.getAttribute("data-scriptio-script");
     // function log(...args) { console.log("[Shortcutio]", ...args ); }

@@ -1,4 +1,11 @@
-// * Hook `window.fetch`
+// ==UserScript==
+// @name         Hook Fetch
+// @description  Hook `window.fetch`, providing before and after hooks for requests and responses
+// @reactive     false
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     const name = "[Hook Fetch]";

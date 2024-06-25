@@ -1,4 +1,11 @@
-// 保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持
+// ==UserScript==
+// @name         Privacio
+// @description  保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     let enabled = false;

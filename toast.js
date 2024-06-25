@@ -1,5 +1,12 @@
-// * 允许其它脚本调用 scriptio_toolkit.toast，需要 hook-vue.js 的支持
-// @run-at main
+// ==UserScript==
+// @name         Toast
+// @description  允许其它脚本调用 scriptio_toolkit.toast，需要 hook-vue.js 的支持
+// @run-at       main
+// @reactive     false
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     const $ = document.querySelector.bind(document);

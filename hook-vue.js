@@ -1,4 +1,12 @@
-// * Hook Vue
+// ==UserScript==
+// @name         Hook Vue
+// @description  Hook Vue, providing mount and unmount hooks for components
+// @reactive     false
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 // Adapted from https://github.com/Night-stars-1/LiteLoaderQQNT-Plugin-LLAPI/blob/main/src/renderer/vue.js
 // Usage:
 //   1. Load this script

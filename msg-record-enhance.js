@@ -1,5 +1,12 @@
-// * 查看转发的聊天记录中已知的和引用消息发送者 QQ，需要 hook-vue.js 的支持
-// @run-at forward
+// ==UserScript==
+// @name         Message Record Enhance
+// @description  查看转发的聊天记录中已知的和引用消息发送者 QQ，需要 hook-vue.js 的支持
+// @run-at       forward
+// @reactive     false
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     const censoredUins = ["0", "1094950020"];

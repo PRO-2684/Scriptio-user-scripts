@@ -1,5 +1,13 @@
-// 编辑框内按下 Ctrl+P 后，自动在中英文、中文与数字之间添加空格，并进行合适的标点符号处理。
-// @run-at main, chat
+// ==UserScript==
+// @name         Pangu
+// @description  编辑框内按下 Ctrl+P 后，自动在中英文、中文与数字之间添加空格，并进行合适的标点符号处理。
+// @run-at       main, chat
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 (function () {
     // Adapted from https://github.com/vinta/pangu.js/blob/master/src/shared/core.js
     const CJK = '\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30fa\u30fc-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff';

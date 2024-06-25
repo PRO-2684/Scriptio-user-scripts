@@ -1,5 +1,12 @@
-// 链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要 hook-vue.js 的支持
-// @run-at main, chat, record, forward
+// ==UserScript==
+// @name         Link Preview
+// @description  链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要 hook-vue.js 的支持
+// @run-at       main, chat, record, forward
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     const DURATION = 500; // Hover time before fetching link info (ms)

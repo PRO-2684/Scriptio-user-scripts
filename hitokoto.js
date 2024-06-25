@@ -1,5 +1,13 @@
-// 获取一言，展现在输入框占位符上
-// @run-at main, chat
+// ==UserScript==
+// @name         Hitokoto
+// @description  获取一言，展现在输入框占位符上
+// @run-at       main, chat
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 (function () {
     // 参数
     const api = "https://v1.hitokoto.cn/"; // 你可以修改这个参数，指定想要的句子类型，参考 https://developer.hitokoto.cn/sentence/#%E5%8F%A5%E5%AD%90%E7%B1%BB%E5%9E%8B-%E5%8F%82%E6%95%B0

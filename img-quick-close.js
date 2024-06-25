@@ -1,5 +1,13 @@
-// * 单击关闭图片查看器
-// @run-at image-viewer
+// ==UserScript==
+// @name         Image Quick Close
+// @description  单击关闭图片查看器
+// @run-at       image-viewer
+// @reactive     false
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
+
 (function () {
     // 修改自: https://github.com/xiyuesaves/LiteLoaderQQNT-lite_tools/blob/4c3f2a532811cacc86372f2acbe652386b9c6e96/src/render_modules/betterImageViewer.js#L7
     let offset = 0;

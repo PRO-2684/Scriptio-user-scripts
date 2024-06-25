@@ -1,5 +1,12 @@
-// 允许接龙自己的消息，需要 hook-vue.js 的支持
-// @run-at main, chat
+// ==UserScript==
+// @name         Relay Self
+// @description  允许接龙自己的消息，需要 hook-vue.js 的支持
+// @run-at       main, chat
+// @reactive     true
+// @version      0.1.0
+// @author       PRO_2684
+// @license      gpl-3.0
+// ==/UserScript==
 
 (function () {
     let enabled = false;
