@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.1.0
+// @version      0.1.1
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==
@@ -275,6 +275,15 @@
                         navigator?.clipboard?.writeText(raw);
                     }
                 }, { capture: true });
+                function altLink(link) {
+                    final = "**Alt+Click 以在浏览器中打开链接**\n" + final;
+                    container?.addEventListener("click", (e) => {
+                        if (e.altKey) {
+                            e.stopImmediatePropagation();
+                            scriptio.open("link", link);
+                        }
+                    }, { capture: true });
+                }
                 switch (data.app) {
                     case "com.tencent.structmsg": { // 结构化消息 (链接分享)
                         const detail = data.meta?.news;
@@ -306,6 +315,17 @@
                         const title = b64decode(detail?.title);
                         const desc = b64decode(detail?.text);
                         final = title && desc ? `[${title}]\n${desc}` : data.prompt || "";
+                        break;
+                    }
+                    case "com.tencent.announce.lua": {
+                        if (data?.bizsrc !== "creategroupmsg.groupaio") return; // Not supported yet
+                        let qq = null;
+                        for (let i = 1; i <= 3; i++) {
+                            const url = data?.meta?.announce[`button${i}URL`];
+                            const params = new URLSearchParams(url);
+                            qq ??= params.get("groupcode") ?? params.get("guin");
+                        }
+                        final = `${data.prompt}\n源 QQ 群: ${qq}`;
                         break;
                     }
                     case "com.tencent.multimsg": { // 转发消息
@@ -342,15 +362,14 @@
                         const stats = statistics.map((v, i) => (v !== null && v !== undefined) ? `${v} ${mapping[i]}` : "").filter(Boolean).join(", ") || "<无统计数据>";
                         const url = feedInfo?.jumpUrl;
                         final = `${title} (${qq})\n${stats}\n${desc}`;
-                        if (url && container) {
-                            final = "**Alt+Click 以在浏览器中打开链接**\n" + final;
-                            container.addEventListener("click", (e) => {
-                                if (e.altKey) {
-                                    e.stopImmediatePropagation();
-                                    scriptio.open("link", url);
-                                }
-                            }, { capture: true });
-                        }
+                        altLink(url);
+                        break;
+                    }
+                    case "com.tencent.video.lua": { // QQ 短视频 (小世界)
+                        const detail = data.meta?.video;
+                        const url = detail?.pcJumpUrl;
+                        final = `${data.prompt}\n${detail?.title} (${detail?.nickname})`;
+                        altLink(url);
                         break;
                     }
                     case "com.tencent.qzone.albumInvite": { // QQ 空间说说
@@ -463,15 +482,7 @@
                         const channel = `${channelInfo?.guild_name} > ${channelInfo?.channel_name}`;
                         const poster = detail?.poster?.nick;
                         final = `${data.prompt}\n频道：${channel}\n楼主：${poster}`;
-                        if (url && container) {
-                            final = "**Alt+Click 以在浏览器中打开链接**\n" + final;
-                            container.addEventListener("click", (e) => {
-                                if (e.altKey) {
-                                    e.stopImmediatePropagation();
-                                    scriptio.open("link", url);
-                                }
-                            }, { capture: true });
-                        }
+                        altLink(url);
                         break;
                     }
                     default: { // 尝试通配
