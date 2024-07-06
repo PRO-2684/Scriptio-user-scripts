@@ -4,6 +4,7 @@
 // @run-at       main, setting
 // @reactive     true
 // @version      0.1.0
+// @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#smooth-transition
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==

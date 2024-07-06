@@ -4,6 +4,7 @@
 // @run-at       main, chat, record, forward
 // @reactive     false
 // @version      0.1.0
+// @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#side-panel
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==

@@ -4,6 +4,7 @@
 // @run-at       main, chat, record, forward
 // @reactive     true
 // @version      0.1.1
+// @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==

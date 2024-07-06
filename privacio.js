@@ -3,6 +3,7 @@
 // @description  保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持
 // @reactive     true
 // @version      0.1.0
+// @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#privacio
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==
