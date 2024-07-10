@@ -17,9 +17,9 @@
         if (!el.querySelector(".user-name .text-ellipsis")) {
             return;
         }
-        const user_name = el.querySelector(".user-name .text-ellipsis");
+        let user_name = el.querySelector(".user-name .text-ellipsis");
         const senderUin=component?.props?.msgRecord?.senderUin
-        if (senderUin !== undefined){
+        if (senderUin !== undefined && !user_name.classList.contains("has-extra-info")){
 
             let nick = component?.props?.msgRecord?.sendNickName;
             let remark = component?.props?.msgRecord?.sendRemarkName;
@@ -27,6 +27,7 @@
             if (remark){remark=remark+"|";}
             if (nick){nick=nick+"|";}
             user_name.textContent = user_name.textContent+"("+remark+nick+senderUin+")";
+            user_name.classList.add("has-extra-info");
         }
     }
 
@@ -69,6 +70,3 @@
     });
 
 })();
-
-
-
