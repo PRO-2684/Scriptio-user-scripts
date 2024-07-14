@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.2.0
+// @version      0.2.1
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -57,27 +57,28 @@
         el.addEventListener("click", clickHandler, { capture: true });
         el.toggleAttribute(tipAttr, true);
     }
-
-    function formatFileSize(bytes) {//Powered by Shapaper@126.com
+    function formatFileSize(bytes) { // By Shapaper@126.com
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
-
-    function formatDuration(seconds) {//Powered by Shapaper@126.com
+    function formatDuration(seconds) { // By Shapaper@126.com
         if (seconds === 0) return '0s';
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
-        seconds = seconds % 60;
+        seconds %= 60;
         const parts = [];
-        if (hours > 0) parts.push(hours + 'h');
-        if (minutes > 0) parts.push(minutes + 'm');
-        if (seconds > 0) parts.push(seconds + 's');
-        return parts.join(' ');
+        if (hours > 0) parts.push(hours);
+        if (minutes > 0) parts.push(minutes);
+        if (seconds > 0) parts.push(seconds);
+        if (parts.length === 1) {
+            return parts[0] + 's';
+        } else {
+            return parts.join(':');
+        }
     }
-
     // Get description for each element
     function getDesc(msgRecEl, msgEl, el) { // Input: one of `.props.msgRecord.elements`, `.message` element and current element
         if (!msgRecEl) return "";
@@ -111,28 +112,22 @@
             case 3: { // fileElement
                 const data = msgRecEl.fileElement;
                 const optionalDimension = data.picWidth && data.picHeight ? ` (${data.picWidth} x ${data.picHeight})` : "";
-                const fileSize = formatFileSize(data.fileSize);
                 const optionalPath = data.filePath ? `\nPath: ${data.filePath}` : "";
-                const tip = `${data.fileName}${optionalDimension}\nSize: ${fileSize}\nMD5: ${data.fileMd5.toUpperCase()}${optionalPath}`;
-
+                const tip = `${data.fileName}${optionalDimension}\nSize: ${formatFileSize(data.fileSize)}\nMD5: ${data.fileMd5.toUpperCase()}${optionalPath}`;
                 setTip(msgEl.querySelector(".file-element"), tip);
                 msgEl.querySelector(".file-element .file-name")?.removeAttribute("title");
-
                 return "";
             }
             case 4: { // pttElement
                 const data = msgRecEl.pttElement;
                 const optionalText = data.text ? `\n${data.text}` : "";
-                const fileSize = formatFileSize(data.fileSize);
                 const durationFormatted = formatDuration(data.duration);
-                const tip = `${data.fileName} (${durationFormatted}, ${fileSize})${optionalText}`;
+                const tip = `${data.fileName} (${durationFormatted}, ${formatFileSize(data.fileSize)})${optionalText}`;
                 return tip;
             }
             case 5: { // videoElement
                 const data = msgRecEl.videoElement;
-                const fileSize = formatFileSize(data.fileSize);
-                const fileTime = formatDuration(data.fileTime);
-                return `${data.fileName} (${fileTime}, ${fileSize})`;
+                return `${data.fileName} (${formatDuration(data.fileTime)}, ${formatFileSize(data.fileSize)})`;
             }
             case 6: { // faceElement
                 const data = msgRecEl.faceElement;
@@ -567,7 +562,7 @@
                 const data = msgRecEl.avRecordElement;
                 const time = parseInt(data.time) / 1000;
                 const type = data.mainType === 1 ? "语音" : "视频";
-                const status = time ? `通话时长: ${time}s` : "未接听";//通话时长就不用转了吧，本身提供的就是转换过的
+                const status = time ? `通话时长: ${time}s` : "未接听";
                 const tip = `${type}通话 (${status})`;
                 const container = msgEl.querySelector(".msg-content-container.av-message__container");
                 setTip(container, tip);
