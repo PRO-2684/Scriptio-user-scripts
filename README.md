@@ -11,7 +11,7 @@
 ## [hook-vue](./hook-vue.js)
 
 > [!WARNING]
-> 已弃用，请改用 `scriptio_toolkit.vueMount` & `scriptio_toolkit.vueUnmount`
+> 已弃用，请改用 `scriptio.vueMount` & `scriptio.vueUnmount`
 
 Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vue 实例，使用方法见代码注释。依赖此脚本的常用代码模板：
 
@@ -54,10 +54,10 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
     } else {
         window.addEventListener("vue-hooked", enable, { once: true });
     }
-    scriptio_toolkit.listen((v) => {
+    scriptio.listen((v) => {
         v ? enable() : disable();
     }, false);
-    // scriptio_toolkit.listen(toggleFunc: Function, immediate: Boolean)
+    // scriptio.listen(toggleFunc: Function, immediate: Boolean)
     // 参见 https://github.com/PRO-2684/Scriptio/wiki/4.-%E7%94%A8%E6%88%B7%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91#%E5%93%8D%E5%BA%94%E6%80%A7%E8%84%9A%E6%9C%AC
 })();
 ```
@@ -172,4 +172,4 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 ## [toast](./toast.js)
 
-允许其它脚本调用 scriptio_toolkit.toast，需要 hook-vue.js 的支持。
+允许其它脚本调用 scriptio.toast，需要 hook-vue.js 的支持。

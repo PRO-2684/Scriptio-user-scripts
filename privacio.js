@@ -45,7 +45,7 @@
     } else {
         window.addEventListener("fetch-hooked", enable, { once: true });
     }
-    scriptio_toolkit.listen((v) => {
+    scriptio.listen((v) => {
         v ? enable() : disable();
     }, false);
 })();

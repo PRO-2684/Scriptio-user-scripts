@@ -680,7 +680,7 @@
         opacity: 0.6;
         font-size: var(--font_size_1);
     }`;
-    const vueMount = scriptio_toolkit.vueMount;
+    const vueMount = scriptio.vueMount;
     function enable() {
         if (enabled) return;
         vueMount.push(inspectio);
@@ -696,7 +696,7 @@
         style.disabled = true;
         enabled = false;
     }
-    scriptio_toolkit.listen((v) => {
+    scriptio.listen((v) => {
         v ? enable() : disable();
     }, true);
 })();

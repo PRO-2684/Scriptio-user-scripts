@@ -54,7 +54,7 @@
             }
         }
     }
-    const vueMount = scriptio_toolkit.vueMount;
+    const vueMount = scriptio.vueMount;
     function main() {
         vueMount.push(addHint);
     }

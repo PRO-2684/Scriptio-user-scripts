@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Toast
-// @description  允许其它脚本调用 scriptio_toolkit.toast，需要开启 LiteLoader Hook Vue
+// @description  允许其它脚本调用 scriptio.toast，需要开启 LiteLoader Hook Vue
 // @run-at       main
 // @reactive     false
 // @version      0.2.0
@@ -93,7 +93,7 @@
             noRepeat: true,
         });
     };
-    scriptio_toolkit.register("toast", toast);
+    scriptio.register("toast", toast);
     // Example usage:
-    // scriptio_toolkit.wait("toast").then(toast => toast("Hello, world!"));
+    // scriptio.wait("toast").then(toast => toast("Hello, world!"));
 })();

@@ -36,7 +36,7 @@
         }
         component.proxy.$watch("$props.msgRecord.msgTime", update, { immediate: true, flush: "post" });
     }
-    const vueMount = scriptio_toolkit.vueMount;
+    const vueMount = scriptio.vueMount;
     function enable() {
         if (enabled) return;
         const style = document.createElement("style");
@@ -71,7 +71,7 @@
         times.forEach((time) => time.remove());
         enabled = false;
     }
-    scriptio_toolkit.listen((v) => {
+    scriptio.listen((v) => {
         v ? enable() : disable();
     }, true);
 })();

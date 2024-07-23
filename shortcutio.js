@@ -9,18 +9,9 @@
 // ==/UserScript==
 
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     // function log(...args) { console.log("[Shortcutio]", ...args ); }
+    const toggleFunctions = [];
     function log(...args) { }
-    function scriptioWrapper(toggleFunc) {
-        window.addEventListener("scriptio-toggle", (event) => {
-            const path = event.detail.path;
-            if (path === self) {
-                toggleFunc(event.detail.enabled);
-            }
-        });
-        toggleFunc(true);
-    }
     function keyDownWrapper(f) {
         let listening = false;
         function onKeyDown (e) {
@@ -45,7 +36,7 @@
             }
             listening = enabled;
         }
-        scriptioWrapper(toggle);
+        toggleFunctions.push(toggle);
     }
     const page = window.location.hash.slice(2).split("/")[0];
     switch (page) {
@@ -177,5 +168,10 @@
         }
         mouseListening = enabled;
     }
-    scriptioWrapper(toggleMouseDown);
+    toggleFunctions.push(toggleMouseDown);
+    scriptio.listen((enabled) => {
+        for (const f of toggleFunctions) {
+            f(enabled);
+        }
+    }, true);
 })();

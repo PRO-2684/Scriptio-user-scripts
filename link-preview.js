@@ -93,7 +93,7 @@
         const links = el.querySelectorAll(".text-link");
         links.forEach(processLink);
     }
-    const vueMount = scriptio_toolkit.vueMount;
+    const vueMount = scriptio.vueMount;
     function enable() {
         if (enabled) return;
         vueMount.push(linkPreview);
@@ -109,7 +109,7 @@
         enabled = false;
         style.disabled = true;
     }
-    scriptio_toolkit.listen((enabled) => {
+    scriptio.listen((enabled) => {
         enabled ? enable() : disable();
     }, true);
 })();
