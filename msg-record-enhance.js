@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Message Record Enhance
-// @description  查看转发的聊天记录中已知的和引用消息发送者 QQ，需要 hook-vue.js 的支持
+// @description  查看转发的聊天记录中已知的和引用消息发送者 QQ，需要开启 LiteLoader Hook Vue
 // @run-at       forward
 // @reactive     false
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#msg-record-enhance
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -54,12 +54,9 @@
             }
         }
     }
+    const vueMount = scriptio_toolkit.vueMount;
     function main() {
-        window.__VUE_MOUNT__.push(addHint);
+        vueMount.push(addHint);
     }
-    if (window.__VUE_MOUNT__) {
-        main();
-    } else {
-        window.addEventListener("vue-hooked", main, { once: true });
-    }
+    main();
 })();

@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Show Time
-// @description  消息显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要 hook-vue.js 的支持
+// @description  消息显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#show-time
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -36,6 +36,7 @@
         }
         component.proxy.$watch("$props.msgRecord.msgTime", update, { immediate: true, flush: "post" });
     }
+    const vueMount = scriptio_toolkit.vueMount;
     function enable() {
         if (enabled) return;
         const style = document.createElement("style");
@@ -55,14 +56,14 @@
             content: ")";
         }`;
         document.head.appendChild(style);
-        window.__VUE_MOUNT__.push(addTime);
+        vueMount.push(addTime);
         enabled = true;
     }
     function disable() {
         if (!enabled) return;
-        const index = window.__VUE_MOUNT__.indexOf(addTime);
+        const index = vueMount.indexOf(addTime);
         if (index > -1) {
-            window.__VUE_MOUNT__.splice(index, 1);
+            vueMount.splice(index, 1);
         }
         const style = document.getElementById("scriptio-show-time");
         style?.remove();
@@ -70,12 +71,7 @@
         times.forEach((time) => time.remove());
         enabled = false;
     }
-    if (window.__VUE_MOUNT__) {
-        enable();
-    } else {
-        window.addEventListener("vue-hooked", enable, { once: true });
-    }
     scriptio_toolkit.listen((v) => {
         v ? enable() : disable();
-    }, false);
+    }, true);
 })();

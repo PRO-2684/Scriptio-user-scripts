@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Hook Vue
-// @description  Hook Vue, providing mount and unmount hooks for components
+// @name         Hook Vue (Deprecated)
+// @description  (Deprecated, use `scriptio_toolkit.vueMount` & `scriptio_toolkit.vueUnmount` instead) Hook Vue, providing mount and unmount hooks for components
 // @reactive     false
-// @version      0.1.0
+// @version      0.1.1
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#hook-vue
 // @author       PRO_2684
 // @license      gpl-3.0

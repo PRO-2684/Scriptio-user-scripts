@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Inspectio 🔎
-// @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
+// @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.2.1
+// @version      0.3.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -680,27 +680,23 @@
         opacity: 0.6;
         font-size: var(--font_size_1);
     }`;
+    const vueMount = scriptio_toolkit.vueMount;
     function enable() {
         if (enabled) return;
-        window.__VUE_MOUNT__.push(inspectio);
+        vueMount.push(inspectio);
         style.disabled = false;
         enabled = true;
     }
     function disable() {
         if (!enabled) return;
-        const index = window.__VUE_MOUNT__.indexOf(inspectio);
+        const index = vueMount.indexOf(inspectio);
         if (index > -1) {
-            window.__VUE_MOUNT__.splice(index, 1);
+            vueMount.splice(index, 1);
         }
         style.disabled = true;
         enabled = false;
     }
-    if (window.__VUE_MOUNT__) {
-        enable();
-    } else {
-        window.addEventListener("vue-hooked", enable, { once: true });
-    }
     scriptio_toolkit.listen((v) => {
         v ? enable() : disable();
-    }, false);
+    }, true);
 })();

@@ -10,6 +10,9 @@
 
 ## [hook-vue](./hook-vue.js)
 
+> [!WARNING]
+> 已弃用，请改用 `scriptio_toolkit.vueMount` & `scriptio_toolkit.vueUnmount`
+
 Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vue 实例，使用方法见代码注释。依赖此脚本的常用代码模板：
 
 ```javascript

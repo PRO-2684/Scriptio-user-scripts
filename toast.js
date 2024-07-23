@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Toast
-// @description  允许其它脚本调用 scriptio_toolkit.toast，需要 hook-vue.js 的支持
+// @description  允许其它脚本调用 scriptio_toolkit.toast，需要开启 LiteLoader Hook Vue
 // @run-at       main
 // @reactive     false
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#toast
 // @author       PRO_2684
 // @license      gpl-3.0

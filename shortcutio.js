@@ -2,7 +2,7 @@
 // @name         Shortcutio
 // @description  添加一些常用的快捷键
 // @reactive     true
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#shortcutio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -74,7 +74,7 @@
                                 if (child.textContent === "设置") {
                                     window.clearInterval(timer);
                                     log("Settings button found");
-                                    const onClick = child?.__VUE__[0]?.vnode?.props?.onClick;
+                                    const onClick = child?.__VUE__?.[0]?.vnode?.props?.onClick;
                                     if (onClick) {
                                         log("Got reference to onClick function")
                                         openSettingsInternal = () => {
