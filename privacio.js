@@ -2,7 +2,7 @@
 // @name         Privacio
 // @description  保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持
 // @reactive     true
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#privacio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -27,23 +27,20 @@
             return [resource, options];
         }
     }
-    function enable() {
+    async function enable() {
         if (enabled) return;
-        window.__FETCH_HOOKS_BEFORE__?.push(privacioFilter);
+        const hooks = await scriptio.wait("fetchHooksBefore");
+        hooks.push(privacioFilter);
         enabled = true;
     }
-    function disable() {
+    async function disable() {
         if (!enabled) return;
-        const index = window.__FETCH_HOOKS_BEFORE__?.indexOf(privacioFilter);
+        const hooks = await scriptio.wait("fetchHooksBefore");
+        const index = hooks.indexOf(privacioFilter);
         if (index !== -1) {
-            window.__FETCH_HOOKS_BEFORE__?.splice(index, 1);
+            hooks.splice(index, 1);
         }
         enabled = false;
-    }
-    if (window.__FETCH_HOOKS_BEFORE__) {
-        enable();
-    } else {
-        window.addEventListener("fetch-hooked", enable, { once: true });
     }
     scriptio.listen((v) => {
         v ? enable() : disable();
