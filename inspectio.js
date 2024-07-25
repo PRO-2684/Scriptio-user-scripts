@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.3.0
+// @version      0.3.1
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -608,7 +608,7 @@
                 }
             }
             component.proxy.$watch("$props.msgRecord.elements", updateAbstract, { immediate: true, flush: "post" });
-        } else if (el?.classList?.contains("recent-contact-item") && component?.proxy?.abstractAriaLabel) {
+        } else if (el?.classList?.contains("recent-contact-item") && component?.proxy?.abstracts) {
             const container = el.querySelector(".list-item__container");
             container?.classList.remove("item-dragging-over"); // Allow the tip to be shown
             function updateAbstract() {
@@ -627,7 +627,7 @@
                     }
                 }
                 if (label) {
-                    const summary = el.querySelector(".recent-contact-abstract");
+                    const summary = el.querySelector(".list-item__summary > .summary-main") ?? el.querySelector(".recent-contact-abstract");
                     setTip(summary, label);
                 }
             }
