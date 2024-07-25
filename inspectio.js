@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.3.1
+// @version      0.3.2
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -39,9 +39,11 @@
     function validQQ(qq) {
         return qq && qq !== "0";
     }
+    function uinInfo(uin, msgEl) { // Input: uin & `.message` element; Output: {cardName (Group nick), nick, role, qid, uin...} (Only tries to find in the current group)
+        return msgEl.__VUE__?.[0]?.props?.getMemberInfoByUid(uin);
+    }
     function uinToQQ(uin, msgEl) { // Input: uin & `.message` element; Output: qq (Only tries to find in the current group)
-        const info = msgEl.__VUE__?.[0]?.props?.getMemberInfoByUid(uin);
-        return info?.uin || uin;
+        return uinInfo(uin, msgEl)?.uin || uin;
     }
     function clickHandler(e) {
         if (e.ctrlKey) {
@@ -245,7 +247,9 @@
                         const queue = [];
                         parts.forEach((part) => {
                             if (part.type === "qq") { // QQ
-                                queue.push([part.nm, `${validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)} (${part.nm})`]);
+                                const info = uinInfo(part.uid, msgEl);
+                                const nick = part.nm || info?.cardName || info?.nick || "<未知昵称>";
+                                queue.push([nick, `${uinToQQ(part.uid, msgEl)} (${nick})`]);
                             } else if (part.type === "url") {
                                 if (part.jp === "5") queue.push([part.txt, `${part.param[0]} (${part.txt})`]); // QQ
                                 else if (part.jp?.length > 1) queue.push([part.txt, part.jp]); // Link
@@ -645,7 +649,7 @@
                 if (cnt) {
                     setTip(bubble, cnt.toString());
                 } else {
-                    bubble.removeAttribute("title");
+                    bubble?.removeAttribute("title");
                 }
             }
             component.proxy.$watch("abstracts", updateAbstract, { immediate: true, flush: "post" });
