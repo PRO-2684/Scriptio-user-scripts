@@ -66,7 +66,7 @@ Hook Vue 实例，使得可以通过 `el.__VUE__` 获取此元素所挂载的 Vu
 
 ## [hook-fetch](./hook-fetch.js)
 
-Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `window.__FETCH_HOOKS_AFTER__` 添加请求前和请求后的处理函数。使用方法见代码注释。
+Hook `fetch` 函数，从而可以通过 `scriptio.wait("fetchHooksBefore")` 和 `scriptio.wait("fetchHooksAfter")` 添加请求前和请求后的处理函数。使用方法见代码注释。
 
 ## [img-quick-close](./img-quick-close.js)
 
@@ -104,15 +104,17 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
     - ![聊天列表最近消息](./images/inspectio-recentMessage.jpg)
 - 资料卡精确点赞数
 
+需要开启 LiteLoader Hook Vue。
+
 ## [link-preview](./link-preview.js)
 
-链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要 hook-vue.js 的支持。*关闭/打开需要切换一次聊天窗口/重新进入聊天记录才能生效。*
+链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要开启 LiteLoader Hook Vue。*关闭/打开需要切换一次聊天窗口/重新进入聊天记录才能生效。*
 
 ![link-preview](./images/link-preview.jpg)
 
 ## [msg-record-enhance](./msg-record-enhance.js)
 
-查看转发的聊天记录中已知的和引用消息发送者 QQ，需要 hook-vue.js 的支持。鼠标悬浮在头像/引用消息的发送者昵称上时显示 QQ 号，双击可复制。*关闭/打开需要重新进入聊天记录才能生效。*
+查看转发的聊天记录中已知的和引用消息发送者 QQ，需要开启 LiteLoader Hook Vue。鼠标悬浮在头像/引用消息的发送者昵称上时显示 QQ 号，双击可复制。*关闭/打开需要重新进入聊天记录才能生效。*
 
 ## [open-in-browser](./open-in-browser.js)
 
@@ -144,7 +146,7 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 ## [relay-self](./relay-self.js)
 
-允许接龙自己的消息，需要 hook-vue.js 的支持
+允许接龙自己的消息，需要开启 LiteLoader Hook Vue
 
 ![relay-self](./images/relay-self.jpg)
 
@@ -155,14 +157,14 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 - `F5` 刷新当前页面
 - `Esc` 关闭当前页面
 - `Enter` 聚焦到输入框（主页面）
-- `Ctrl+,` 打开设置页面（若装有 `hook-vue.js` 或其它插件有类似功能，则尝试调用内部的打开设置函数，否则通过模拟点击打开）
+- `Ctrl+,` 打开设置页面（若开启了 LiteLoader Hook Vue 或其它插件有类似功能，则尝试调用内部的打开设置函数，否则通过模拟点击打开）
 - `Ctrl+Tab` 聊天与联系人界面切换
 
 同时，修复鼠标侧键，从而进行前进与后退。（`button` 为 3 时，模拟后退；为 4 时，模拟前进）
 
 ## [show-time](./show-time.js)
 
-消息后显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要 hook-vue.js 的支持。*关闭/打开可能需要切换一次聊天窗口/上下滚动几屏才能生效。*
+消息后显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，同时隐藏 QQ 自带的详细时间，需要开启 LiteLoader Hook Vue。*关闭/打开可能需要切换一次聊天窗口/上下滚动几屏才能生效。*
 
 ![show-time](./images/show-time.jpg)
 
@@ -172,4 +174,4 @@ Hook `fetch` 函数，从而可以通过 `window.__FETCH_HOOKS_BEFORE__` 和 `wi
 
 ## [toast](./toast.js)
 
-允许其它脚本调用 scriptio.toast，需要 hook-vue.js 的支持。
+允许其它脚本调用 scriptio.toast，需要开启 LiteLoader Hook Vue。
