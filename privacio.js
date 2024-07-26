@@ -2,7 +2,7 @@
 // @name         Privacio
 // @description  保护你的隐私：阻止 QQ 的一些追踪行为，需要 hook-fetch.js 的支持
 // @reactive     true
-// @version      0.2.0
+// @version      0.2.1
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#privacio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -17,6 +17,9 @@
     ]);
     function privacioFilter(resource, options) {
         if (typeof resource !== "string") { // Does not consider Request object
+            return [resource, options];
+        }
+        if (!URL.canParse(resource)) {
             return [resource, options];
         }
         const url = new URL(resource);
