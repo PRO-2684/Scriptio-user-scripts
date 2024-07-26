@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.3.2
+// @version      0.3.3
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -596,7 +596,7 @@
                 if (validQQ(uin)) {
                     tip += `\nQQ: ${uin}`;
                 }
-                avatar.title = tip;
+                setTip(avatar, tip);
             }
             function updateAbstract() {
                 const msgRecEls = component?.props?.msgRecord?.elements;
