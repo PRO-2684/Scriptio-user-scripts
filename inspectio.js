@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Inspectio 🔎
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
-// @run-at       main, chat, record, forward
+// @run-at       main, chat, record, forward, notice
 // @reactive     true
-// @version      0.3.3
+// @version      0.3.4
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -664,7 +664,19 @@
                 setTip(el, likes.toString());
             }
             component.proxy.$watch("$props.totalLikes", showLikes, { immediate: true, flush: "post" });
-         }],
+        }],
+        ["notice-item", (component, el) => {
+            const qq = component?.props?.noticeData?.uin;
+            const nameSpan = el.querySelector(".publisher-name");
+            if (validQQ(qq) && nameSpan) {
+                setTip(nameSpan, `QQ: ${qq}`);
+            }
+            const timeStamp = component?.props?.noticeData?.publishTime;
+            const date = new Date(parseInt(timeStamp) * 1000);
+            const exactTime = `${date.toLocaleString("zh-CN")}\n${date.getTime()}`;
+            const timeSpan = nameSpan?.nextElementSibling;
+            setTip(timeSpan, exactTime);
+        }],
     ]);
     function inspectio(component) {
         const el = component?.vnode?.el;
