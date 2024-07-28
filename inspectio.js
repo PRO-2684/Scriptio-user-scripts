@@ -82,7 +82,7 @@
         }
     }
     // Get description for each element
-    function getDesc(msgRecEl, msgEl, el) { // Input: one of `.props.msgRecord.elements`, `.message` element and current element
+    function getMsgElementDesc(msgRecEl, msgEl, el) { // Input: one of `.props.msgRecord.elements`, `.message` element and current element
         if (!msgRecEl) return "";
         switch (msgRecEl.elementType) {
             case 1: { // textElement
@@ -578,9 +578,8 @@
         }
     }
     // Process component
-    function inspectio(component) {
-        const el = component?.vnode?.el;
-        if (el?.classList?.contains("message")) {
+    const actionsMap = new Map([
+        ["message", (component, el) => {
             const avatar = el.querySelector(".message-container > .avatar-span");
             if (avatar) {
                 let tip = "";
@@ -605,14 +604,16 @@
                 for (let i = 0; i < msgRecEls.length; i++) {
                     const msgRecEl = msgRecEls[i];
                     const subEl = container?.children[i];
-                    const desc = getDesc(msgRecEl, el, subEl);
+                    const desc = getMsgElementDesc(msgRecEl, el, subEl);
                     if (desc && subEl) {
                         setTip(subEl, desc);
                     }
                 }
             }
             component.proxy.$watch("$props.msgRecord.elements", updateAbstract, { immediate: true, flush: "post" });
-        } else if (el?.classList?.contains("recent-contact-item") && component?.proxy?.abstracts) {
+        }],
+        ["recent-contact-item", (component, el) => {
+            if (!component?.proxy?.abstracts) return;
             const container = el.querySelector(".list-item__container");
             container?.classList.remove("item-dragging-over"); // Allow the tip to be shown
             function updateAbstract() {
@@ -655,12 +656,24 @@
             component.proxy.$watch("abstracts", updateAbstract, { immediate: true, flush: "post" });
             component.proxy.$watch("contactItemData", updateInfo, { immediate: true, flush: "post" });
             component.proxy.$watch("unreadCnt", updateUnread, { immediate: true, flush: "post" });
-        } else if (el?.classList?.contains("buddy-like-btn") && component?.props?.totalLikeLimit) {
+        }],
+        ["buddy-like-btn", (component, el) => {
+            if (!component?.props?.totalLikeLimit) return;
             function showLikes() {
                 const likes = component?.props?.totalLikes;
                 setTip(el, likes.toString());
             }
             component.proxy.$watch("$props.totalLikes", showLikes, { immediate: true, flush: "post" });
+         }],
+    ]);
+    function inspectio(component) {
+        const el = component?.vnode?.el;
+        const classList = el?.classList ?? [];
+        for (const className of classList) {
+            if (actionsMap.has(className)) {
+                actionsMap.get(className)(component, el);
+                break;
+            }
         }
     }
     const style = document.head.appendChild(document.createElement("style"));
