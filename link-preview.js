@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Link Preview
-// @description  链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要 hook-vue.js 的支持
+// @description  链接预览：鼠标经过链接时尝试加载浏览，悬浮显示链接的标题和描述，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#link-preview
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -93,27 +93,23 @@
         const links = el.querySelectorAll(".text-link");
         links.forEach(processLink);
     }
+    const vueMount = scriptio.vueMount;
     function enable() {
         if (enabled) return;
-        window.__VUE_MOUNT__.push(linkPreview);
+        vueMount.push(linkPreview);
         enabled = true;
         style.disabled = false;
     }
     function disable() {
         if (!enabled) return;
-        const index = window.__VUE_MOUNT__.indexOf(linkPreview);
+        const index = vueMount.indexOf(linkPreview);
         if (index > -1) {
-            window.__VUE_MOUNT__.splice(index, 1);
+            vueMount.splice(index, 1);
         }
         enabled = false;
         style.disabled = true;
     }
-    if (window.__VUE_MOUNT__) {
-        enable();
-    } else {
-        window.addEventListener("vue-hooked", enable, { once: true });
-    }
-    scriptio_toolkit.listen((enabled) => {
+    scriptio.listen((enabled) => {
         enabled ? enable() : disable();
-    }, false);
+    }, true);
 })();

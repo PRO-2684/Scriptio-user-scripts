@@ -2,7 +2,7 @@
 // @name         Hook Fetch
 // @description  Hook `window.fetch`, providing before and after hooks for requests and responses
 // @reactive     false
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#hook-fetch
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -13,14 +13,14 @@
     const debug = false;
     const log = debug ? console.log.bind(console, name) : () => { };
     window._fetch = window.fetch;
-    window.__FETCH_HOOKS_BEFORE__ = []; // (resource, options) => true / [resource, options] / void/null/undefined/false (keep request / modify request / block request)
-    window.__FETCH_HOOKS_AFTER__ = []; // (response) => true / response (keep response / modify response)
+    const fetchHooksBefore = []; // (resource, options) => true / [resource, options] / void/null/undefined/false (keep request / modify request / block request)
+    const fetchHooksAfter = []; // (response) => true / response (keep response / modify response)
     // Overwrite `window.fetch` method
     window.fetch = function (resource, options) {
         let newResource = resource;
         let newOptions = options;
         log("Fetching", resource, options);
-        for (const hook of window.__FETCH_HOOKS_BEFORE__) {
+        for (const hook of fetchHooksBefore) {
             try {
                 const result = hook(newResource, newOptions);
                 if (result === true) { // Keep request
@@ -39,7 +39,7 @@
         log("Finished applying before hooks", newResource, newOptions);
         return window._fetch(newResource, newOptions).then((response) => {
             try {
-                for (const hook of window.__FETCH_HOOKS_AFTER__) {
+                for (const hook of fetchHooksAfter) {
                     const result = hook(response);
                     if (result === true) { // Keep response
                         continue;
@@ -55,15 +55,20 @@
         });
     };
     log("Hooked `window.fetch`");
-    window.dispatchEvent(new CustomEvent("fetch-hooked"));
+    scriptio.register("fetchHooksBefore", fetchHooksBefore);
+    scriptio.register("fetchHooksAfter", fetchHooksAfter);
     // Examples - log all requests and responses
-    // window.__FETCH_HOOKS_BEFORE__.push((resource, options) => {
-    //     console.log("Fetching", resource);
-    //     return true;
-    // });
-    // window.__FETCH_HOOKS_AFTER__.push((response) => {
-    //     console.log("Fetched", response.url, response);
-    //     return true;
-    // });
+    // scriptio.wait("fetchHooksBefore").then(
+    //     hooks => hooks.push((resource, options) => {
+    //         console.log("Fetching", resource);
+    //         return true;
+    //     })
+    // );
+    // scriptio.wait("fetchHooksAfter").then(
+    //     hooks => hooks.push((response) => {
+    //         console.log("Fetched", response.url, response);
+    //         return true;
+    //     })
+    // );
     // Examples - domain-specific blacklist: See privacio.js
 })();

@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Relay Self
-// @description  允许接龙自己的消息，需要 hook-vue.js 的支持
+// @description  允许接龙自己的消息，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat
 // @reactive     true
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#relay-self
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -24,25 +24,21 @@
         }
         component.proxy.$watch("$props.isSelf", update, { immediate: true, flush: "post" });
     }
+    const vueMount = scriptio.vueMount;
     function enable() {
         if (enabled) return;
-        window.__VUE_MOUNT__.push(relaySelf);
+        vueMount.push(relaySelf);
         enabled = true;
     }
     function disable() {
         if (!enabled) return;
-        const index = window.__VUE_MOUNT__.indexOf(relaySelf);
+        const index = vueMount.indexOf(relaySelf);
         if (index > -1) {
-            window.__VUE_MOUNT__.splice(index, 1);
+            vueMount.splice(index, 1);
         }
         enabled = false;
     }
-    if (window.__VUE_MOUNT__) {
-        enable();
-    } else {
-        window.addEventListener("vue-hooked", enable, { once: true });
-    }
-    scriptio_toolkit.listen((v) => {
+    scriptio.listen((v) => {
         v ? enable() : disable();
-    }, false);
+    }, true);
 })();

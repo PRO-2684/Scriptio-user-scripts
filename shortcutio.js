@@ -2,25 +2,16 @@
 // @name         Shortcutio
 // @description  添加一些常用的快捷键
 // @reactive     true
-// @version      0.1.0
+// @version      0.2.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#shortcutio
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==
 
 (function () {
-    const self = document.currentScript?.getAttribute("data-scriptio-script");
     // function log(...args) { console.log("[Shortcutio]", ...args ); }
+    const toggleFunctions = [];
     function log(...args) { }
-    function scriptioWrapper(toggleFunc) {
-        window.addEventListener("scriptio-toggle", (event) => {
-            const path = event.detail.path;
-            if (path === self) {
-                toggleFunc(event.detail.enabled);
-            }
-        });
-        toggleFunc(true);
-    }
     function keyDownWrapper(f) {
         let listening = false;
         function onKeyDown (e) {
@@ -45,7 +36,7 @@
             }
             listening = enabled;
         }
-        scriptioWrapper(toggle);
+        toggleFunctions.push(toggle);
     }
     const page = window.location.hash.slice(2).split("/")[0];
     switch (page) {
@@ -74,7 +65,7 @@
                                 if (child.textContent === "设置") {
                                     window.clearInterval(timer);
                                     log("Settings button found");
-                                    const onClick = child?.__VUE__[0]?.vnode?.props?.onClick;
+                                    const onClick = child?.__VUE__?.[0]?.vnode?.props?.onClick;
                                     if (onClick) {
                                         log("Got reference to onClick function")
                                         openSettingsInternal = () => {
@@ -177,5 +168,10 @@
         }
         mouseListening = enabled;
     }
-    scriptioWrapper(toggleMouseDown);
+    toggleFunctions.push(toggleMouseDown);
+    scriptio.listen((enabled) => {
+        for (const f of toggleFunctions) {
+            f(enabled);
+        }
+    }, true);
 })();

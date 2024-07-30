@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Inspectio 🔎
-// @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要 hook-vue.js 的支持
-// @run-at       main, chat, record, forward
+// @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
+// @run-at       main, chat, record, forward, notice
 // @reactive     true
-// @version      0.2.1
+// @version      0.3.4
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -39,9 +39,11 @@
     function validQQ(qq) {
         return qq && qq !== "0";
     }
+    function uinInfo(uin, msgEl) { // Input: uin & `.message` element; Output: {cardName (Group nick), nick, role, qid, uin...} (Only tries to find in the current group)
+        return msgEl.__VUE__?.[0]?.props?.getMemberInfoByUid(uin);
+    }
     function uinToQQ(uin, msgEl) { // Input: uin & `.message` element; Output: qq (Only tries to find in the current group)
-        const info = msgEl.__VUE__?.[0]?.props?.getMemberInfoByUid(uin);
-        return info?.uin || uin;
+        return uinInfo(uin, msgEl)?.uin || uin;
     }
     function clickHandler(e) {
         if (e.ctrlKey) {
@@ -80,7 +82,7 @@
         }
     }
     // Get description for each element
-    function getDesc(msgRecEl, msgEl, el) { // Input: one of `.props.msgRecord.elements`, `.message` element and current element
+    function getMsgElementDesc(msgRecEl, msgEl, el) { // Input: one of `.props.msgRecord.elements`, `.message` element and current element
         if (!msgRecEl) return "";
         switch (msgRecEl.elementType) {
             case 1: { // textElement
@@ -245,7 +247,9 @@
                         const queue = [];
                         parts.forEach((part) => {
                             if (part.type === "qq") { // QQ
-                                queue.push([part.nm, `${validQQ(part.uin) ? part.uin : uinToQQ(part.uid, msgEl)} (${part.nm})`]);
+                                const info = uinInfo(part.uid, msgEl);
+                                const nick = part.nm || info?.cardName || info?.nick || "<未知昵称>";
+                                queue.push([nick, `${uinToQQ(part.uid, msgEl)} (${nick})`]);
                             } else if (part.type === "url") {
                                 if (part.jp === "5") queue.push([part.txt, `${part.param[0]} (${part.txt})`]); // QQ
                                 else if (part.jp?.length > 1) queue.push([part.txt, part.jp]); // Link
@@ -574,9 +578,8 @@
         }
     }
     // Process component
-    function inspectio(component) {
-        const el = component?.vnode?.el;
-        if (el?.classList?.contains("message")) {
+    const actionsMap = new Map([
+        ["message", (component, el) => {
             const avatar = el.querySelector(".message-container > .avatar-span");
             if (avatar) {
                 let tip = "";
@@ -592,7 +595,7 @@
                 if (validQQ(uin)) {
                     tip += `\nQQ: ${uin}`;
                 }
-                avatar.title = tip;
+                setTip(avatar, tip);
             }
             function updateAbstract() {
                 const msgRecEls = component?.props?.msgRecord?.elements;
@@ -601,14 +604,16 @@
                 for (let i = 0; i < msgRecEls.length; i++) {
                     const msgRecEl = msgRecEls[i];
                     const subEl = container?.children[i];
-                    const desc = getDesc(msgRecEl, el, subEl);
+                    const desc = getMsgElementDesc(msgRecEl, el, subEl);
                     if (desc && subEl) {
                         setTip(subEl, desc);
                     }
                 }
             }
             component.proxy.$watch("$props.msgRecord.elements", updateAbstract, { immediate: true, flush: "post" });
-        } else if (el?.classList?.contains("recent-contact-item") && component?.proxy?.abstractAriaLabel) {
+        }],
+        ["recent-contact-item", (component, el) => {
+            if (!component?.proxy?.abstracts) return;
             const container = el.querySelector(".list-item__container");
             container?.classList.remove("item-dragging-over"); // Allow the tip to be shown
             function updateAbstract() {
@@ -627,7 +632,7 @@
                     }
                 }
                 if (label) {
-                    const summary = el.querySelector(".recent-contact-abstract");
+                    const summary = el.querySelector(".list-item__summary > .summary-main") ?? el.querySelector(".recent-contact-abstract");
                     setTip(summary, label);
                 }
             }
@@ -645,18 +650,42 @@
                 if (cnt) {
                     setTip(bubble, cnt.toString());
                 } else {
-                    bubble.removeAttribute("title");
+                    bubble?.removeAttribute("title");
                 }
             }
             component.proxy.$watch("abstracts", updateAbstract, { immediate: true, flush: "post" });
             component.proxy.$watch("contactItemData", updateInfo, { immediate: true, flush: "post" });
             component.proxy.$watch("unreadCnt", updateUnread, { immediate: true, flush: "post" });
-        } else if (el?.classList?.contains("buddy-like-btn") && component?.props?.totalLikeLimit) {
+        }],
+        ["buddy-like-btn", (component, el) => {
+            if (!component?.props?.totalLikeLimit) return;
             function showLikes() {
                 const likes = component?.props?.totalLikes;
                 setTip(el, likes.toString());
             }
             component.proxy.$watch("$props.totalLikes", showLikes, { immediate: true, flush: "post" });
+        }],
+        ["notice-item", (component, el) => {
+            const qq = component?.props?.noticeData?.uin;
+            const nameSpan = el.querySelector(".publisher-name");
+            if (validQQ(qq) && nameSpan) {
+                setTip(nameSpan, `QQ: ${qq}`);
+            }
+            const timeStamp = component?.props?.noticeData?.publishTime;
+            const date = new Date(parseInt(timeStamp) * 1000);
+            const exactTime = `${date.toLocaleString("zh-CN")}\n${date.getTime()}`;
+            const timeSpan = nameSpan?.nextElementSibling;
+            setTip(timeSpan, exactTime);
+        }],
+    ]);
+    function inspectio(component) {
+        const el = component?.vnode?.el;
+        const classList = el?.classList ?? [];
+        for (const className of classList) {
+            if (actionsMap.has(className)) {
+                actionsMap.get(className)(component, el);
+                break;
+            }
         }
     }
     const style = document.head.appendChild(document.createElement("style"));
@@ -680,27 +709,23 @@
         opacity: 0.6;
         font-size: var(--font_size_1);
     }`;
+    const vueMount = scriptio.vueMount;
     function enable() {
         if (enabled) return;
-        window.__VUE_MOUNT__.push(inspectio);
+        vueMount.push(inspectio);
         style.disabled = false;
         enabled = true;
     }
     function disable() {
         if (!enabled) return;
-        const index = window.__VUE_MOUNT__.indexOf(inspectio);
+        const index = vueMount.indexOf(inspectio);
         if (index > -1) {
-            window.__VUE_MOUNT__.splice(index, 1);
+            vueMount.splice(index, 1);
         }
         style.disabled = true;
         enabled = false;
     }
-    if (window.__VUE_MOUNT__) {
-        enable();
-    } else {
-        window.addEventListener("vue-hooked", enable, { once: true });
-    }
-    scriptio_toolkit.listen((v) => {
+    scriptio.listen((v) => {
         v ? enable() : disable();
-    }, false);
+    }, true);
 })();

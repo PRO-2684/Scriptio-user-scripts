@@ -80,5 +80,5 @@
         css_trans.disabled = !enabled;
         log("Toggle hitokoto:", enabled);
     }
-    scriptio_toolkit.listen(toggle, true);
+    scriptio.listen(toggle, true);
 })();
