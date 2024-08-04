@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward, notice
 // @reactive     true
-// @version      0.3.5
+// @version      0.3.6
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -581,24 +581,28 @@
     // Process component
     const actionsMap = new Map([
         ["message", (component, el) => {
-            const avatar = el.querySelector(".message-container > .avatar-span");
-            if (avatar) {
-                let tip = "";
-                const nick = component?.props?.msgRecord?.sendNickName;
-                if (nick) {
-                    tip += `昵称: ${nick}`;
-                }
-                const remark = component?.props?.msgRecord?.sendRemarkName;
-                if (remark) {
-                    tip += `\n备注: ${remark}`;
-                }
-                const uin = component?.props?.msgRecord?.senderUin;
-                if (validQQ(uin)) {
-                    tip += `\nQQ: ${uin}`;
-                }
-                setTip(avatar, tip);
-            }
             function updateAbstract() {
+                const avatar = el.querySelector(".message-container > .avatar-span");
+                if (avatar) {
+                    let tip = "";
+                    const nick = component?.props?.msgRecord?.sendNickName;
+                    if (nick) {
+                        tip += `昵称: ${nick}`;
+                    }
+                    const remark = component?.props?.msgRecord?.sendRemarkName;
+                    if (remark) {
+                        tip += `\n备注: ${remark}`;
+                    }
+                    const uin = component?.props?.msgRecord?.senderUin;
+                    if (validQQ(uin)) {
+                        tip += `\nQQ: ${uin}`;
+                    }
+                    const title = component?.props?.msgRecord?.msgAttrs?.get?.(2)?.groupHonor?.uniqueTitle;
+                    if (title) {
+                        tip += `\n头衔: ${title}`;
+                    }
+                    setTip(avatar, tip);
+                }
                 const msgRecEls = component?.props?.msgRecord?.elements;
                 const container = el.querySelector(".message-content__wrapper > div > div");
                 if (!msgRecEls?.length) return;
@@ -611,7 +615,7 @@
                     }
                 }
             }
-            component.proxy.$watch("$props.msgRecord.elements", updateAbstract, { immediate: true, flush: "post" });
+            component.proxy.$watch("$props.msgRecord", updateAbstract, { immediate: true, flush: "post" });
         }],
         ["recent-contact-item", (component, el) => {
             if (!component?.proxy?.abstracts) return;
