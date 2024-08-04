@@ -23,7 +23,7 @@
     function addHint(component) {
         const el = component?.vnode?.el;
         if (!el) return;
-        let sender, sel;
+        let sender;
         if (el?.classList?.contains("reply-element")) { // 引用消息查看发送者
             console.log("reply-element");
             sender = component?.props?.msgElement?.replyElement?.senderUid;
@@ -34,7 +34,7 @@
             const givenSender = component?.props?.msgRecord?.senderUin;
             sender = censoredUins.includes(givenSender) ? null : givenSender;
             if (sender) {
-                setTitle(el.querySelector(".avatar-span"), `发送者 QQ: ${sender} (双击复制)`, sender);
+                setTitle(el.querySelector(".avatar-span"), `发送者 QQ (双击复制): ${sender}`, sender);
             } else {
                 const info = component?.props?.msgRecord?.multiTransInfo;
                 if (!info) return;
@@ -43,7 +43,7 @@
                 if (anonId && avatarUrl) {
                     const avatar = el.querySelector(".avatar-span");
                     if (avatar) {
-                        setTitle(avatar, `未知发送者\nAlt+Click 在浏览器打开头像\n标识 ID: ${anonId} (双击复制)`, anonId);
+                        setTitle(avatar, `未知发送者\nAlt+Click 在浏览器打开头像\n标识 ID (双击复制): ${anonId}`, anonId);
                         avatar.addEventListener("click", (e) => {
                             if (e.altKey) {
                                 scriptio.open("link", avatarUrl);
