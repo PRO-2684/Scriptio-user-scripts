@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward, notice
 // @reactive     true
-// @version      0.3.4
+// @version      0.3.5
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -134,13 +134,14 @@
             case 6: { // faceElement
                 const data = msgRecEl.faceElement;
                 const id = data.faceIndex;
-                const face = state.common_QQFace?.dataMap?.[id];
+                const face = state.McEmojiStore?.qqEmojiMap?.[id];
                 let final = "";
                 if (face) {
-                    if (face?.name) {
-                        final += formatFace(face.name);
+                    const faceName = face?.name ?? face?.describe;
+                    if (faceName) {
+                        final += formatFace(faceName);
                     } else {
-                        final += formatFace(face?.faceText || `未知表情#${id}`);
+                        final += formatFace(`未知表情#${id}`);
                     }
                 } else if (data?.faceText) {
                     final += formatFace(data.faceText);
