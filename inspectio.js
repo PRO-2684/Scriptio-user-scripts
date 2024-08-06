@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Inspectio 🔎
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
-// @run-at       main, chat, record, forward, notice
+// @run-at       main, chat, record, forward, notice, group-essence, group-essence-share
 // @reactive     true
-// @version      0.3.6
+// @version      0.3.7
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -581,41 +581,46 @@
     // Process component
     const actionsMap = new Map([
         ["message", (component, el) => {
-            function updateAbstract() {
-                const avatar = el.querySelector(".message-container > .avatar-span");
-                if (avatar) {
-                    let tip = "";
-                    const nick = component?.props?.msgRecord?.sendNickName;
-                    if (nick) {
-                        tip += `昵称: ${nick}`;
+            if (component?.proxy?.reply) { // Chat messages
+                function updateAbstract() {
+                    const avatar = el.querySelector(".message-container > .avatar-span");
+                    if (avatar) {
+                        let tip = "";
+                        const nick = component?.props?.msgRecord?.sendNickName;
+                        if (nick) {
+                            tip += `昵称: ${nick}`;
+                        }
+                        const remark = component?.props?.msgRecord?.sendRemarkName;
+                        if (remark) {
+                            tip += `\n备注: ${remark}`;
+                        }
+                        const uin = component?.props?.msgRecord?.senderUin;
+                        if (validQQ(uin)) {
+                            tip += `\nQQ: ${uin}`;
+                        }
+                        const title = component?.props?.msgRecord?.msgAttrs?.get?.(2)?.groupHonor?.uniqueTitle;
+                        if (title) {
+                            tip += `\n头衔: ${title}`;
+                        }
+                        setTip(avatar, tip);
                     }
-                    const remark = component?.props?.msgRecord?.sendRemarkName;
-                    if (remark) {
-                        tip += `\n备注: ${remark}`;
+                    const msgRecEls = component?.props?.msgRecord?.elements;
+                    const container = el.querySelector(".message-content__wrapper > div > div");
+                    if (!msgRecEls?.length) return;
+                    for (let i = 0; i < msgRecEls.length; i++) {
+                        const msgRecEl = msgRecEls[i];
+                        const subEl = container?.children[i];
+                        const desc = getMsgElementDesc(msgRecEl, el, subEl);
+                        if (desc && subEl) {
+                            setTip(subEl, desc);
+                        }
                     }
-                    const uin = component?.props?.msgRecord?.senderUin;
-                    if (validQQ(uin)) {
-                        tip += `\nQQ: ${uin}`;
-                    }
-                    const title = component?.props?.msgRecord?.msgAttrs?.get?.(2)?.groupHonor?.uniqueTitle;
-                    if (title) {
-                        tip += `\n头衔: ${title}`;
-                    }
-                    setTip(avatar, tip);
                 }
-                const msgRecEls = component?.props?.msgRecord?.elements;
-                const container = el.querySelector(".message-content__wrapper > div > div");
-                if (!msgRecEls?.length) return;
-                for (let i = 0; i < msgRecEls.length; i++) {
-                    const msgRecEl = msgRecEls[i];
-                    const subEl = container?.children[i];
-                    const desc = getMsgElementDesc(msgRecEl, el, subEl);
-                    if (desc && subEl) {
-                        setTip(subEl, desc);
-                    }
-                }
+                component.proxy.$watch("$props.msgRecord", updateAbstract, { immediate: true, flush: "post" });
+            } else if (component?.proxy?.message?.share_time) { // Group essence share
+                const timestamp = component.proxy.message.share_time * 1000;
+                setTip(el.querySelector(".message-time"), timestamp);
             }
-            component.proxy.$watch("$props.msgRecord", updateAbstract, { immediate: true, flush: "post" });
         }],
         ["recent-contact-item", (component, el) => {
             if (!component?.proxy?.abstracts) return;
@@ -681,6 +686,25 @@
             const exactTime = `${date.toLocaleString("zh-CN")}\n${date.getTime()}`;
             const timeSpan = nameSpan?.nextElementSibling;
             setTip(timeSpan, exactTime);
+        }],
+        ["message-list", (component, el) => {
+            const msgList = component?.proxy?.msgList;
+            const headers = el.querySelectorAll(".msg-list > .message-item > .message-item-container > .message-item-container-top > .message-item-container-top-info");
+            if (msgList.length !== headers.length || msgList.length === 0) return;
+            function timeTip(timestampSeconds) {
+                const date = new Date(timestampSeconds * 1000);
+                return `${date.toLocaleString("zh-CN")}\n${date.getTime()}`;
+            }
+            for (let i = 0; i < msgList.length; i++) {
+                const msg = msgList[i];
+                const header = headers[i];
+                const senderNick = header.querySelector(".message-item-container-top-info-nick");
+                setTip(senderNick, `发送者 QQ: ${msg.sender_uin}`);
+                const [sendTime, _1, _2, addTime, adderNick] = header.querySelector(".message-item-container-top-info-send").children;
+                setTip(sendTime, `发送时间: ${timeTip(msg.sender_time)}`);
+                setTip(addTime, `加精时间: ${timeTip(msg.add_digest_time)}`);
+                setTip(adderNick, `加精者 QQ: ${msg.add_digest_uin}`);
+            }
         }],
     ]);
     function inspectio(component) {
