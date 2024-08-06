@@ -104,6 +104,8 @@ Hook `fetch` 函数，从而可以通过 `scriptio.wait("fetchHooksBefore")` 和
     - ![聊天列表最近消息](./images/inspectio-recentMessage.jpg)
 - 资料卡精确点赞数
 - 群公告发送者 QQ 以及详细发送时间
+- 群精华消息发送者、加精者 QQ 以及详细发送、加精时间
+- 分享的精华消息详细发送时间
 
 需要开启 LiteLoader Hook Vue。
 
