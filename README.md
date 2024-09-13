@@ -83,6 +83,7 @@ Hook `fetch` 函数，从而可以通过 `scriptio.wait("fetchHooksBefore")` 和
 - 表情/表情包/图片的摘要、长宽
     - ![表情包摘要](./images/inspectio-showSummary.jpg)
 - 允许保存表情包 (拖拽到保存位置即可)
+- 允许拖拽 QQ 表情
 - 图片文件名、尺寸、占用大小以及网址
 - 视频文件名、时长以及占用大小
 - 红包领取信息

@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward, notice, group-essence, group-essence-share
 // @reactive     true
-// @version      0.3.7
+// @version      0.3.8
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -153,6 +153,15 @@
                 if (data.randomType === 1 && data.resultId) {
                     final += `\n随机结果: ${data.resultId}`;
                 }
+                const observer = new MutationObserver((mutations) => {
+                    const img = el.querySelector("img.face-element__icon");
+                    if (img) {
+                        img.removeAttribute("ondragstart");
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(el, { childList: true });
+                setTimeout(() => observer.disconnect(), 1000);
                 return final;
             }
             case 7: { // replyElement
