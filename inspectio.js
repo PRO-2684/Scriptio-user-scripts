@@ -633,7 +633,7 @@
         }],
         ["recent-contact-item", (component, el) => {
             if (!component?.proxy?.abstracts) return;
-            const container = el.querySelector(".list-item__container");
+            const container = el.querySelector(".item-dragging-over");
             container?.classList.remove("item-dragging-over"); // Allow the tip to be shown
             function updateAbstract() {
                 const data = component?.proxy?.abstracts;
@@ -651,17 +651,29 @@
                     }
                 }
                 if (label) {
-                    const summary = el.querySelector(".list-item__summary > .summary-main") ?? el.querySelector(".recent-contact-abstract");
+                    const summary = el.querySelector(".summary-main") ?? el.querySelector(".recent-contact-abstract");
                     setTip(summary, label);
+                    console.log("updateAbstract", label);
                 }
             }
-            function updateInfo() {
+            function updateInfoOld() {
                 const data = component?.proxy?.contactItemData;
-                const name = data?.name;
-                const optionalUin = (data?.uin && data?.uin !== "0") ? ` (${data.uin})` : "";
+                if (!data) return;
+                const { name, uin } = data;
+                const optionalUin = (uin && uin !== "0" && uin !== "") ? ` (${uin})` : "";
                 const title = name + optionalUin;
                 const info = el.querySelector(".main-info > span");
                 setTip(info, title);
+                console.log("updateInfoOld", title);
+            }
+            function updateInfo() {
+                const name = component?.proxy?.contactName;
+                const uin = component?.proxy?.peerUid;
+                const optionalUin = (uin && uin !== "0" && uin !== "") ? ` (${uin})` : "";
+                const title = name + optionalUin;
+                const info = el.querySelector(".main-info > span");
+                setTip(info, title);
+                console.log("updateInfo", title);
             }
             function updateUnread() {
                 const cnt = component?.proxy?.unreadCnt;
@@ -671,10 +683,19 @@
                 } else {
                     bubble?.removeAttribute("title");
                 }
+                console.log("updateUnread", cnt);
             }
-            component.proxy.$watch("abstracts", updateAbstract, { immediate: true, flush: "post" });
-            component.proxy.$watch("contactItemData", updateInfo, { immediate: true, flush: "post" });
-            component.proxy.$watch("unreadCnt", updateUnread, { immediate: true, flush: "post" });
+            function watch(attr, func) {
+                component.proxy.$watch(attr, func, { immediate: true, flush: "post" });
+            }
+            watch("abstracts", updateAbstract);
+            if (component.proxy.contactItemData) {
+                watch("contactItemData", updateInfoOld);
+            } else {
+                watch("contactName", updateInfo);
+                watch("peerUid", updateInfo);
+            }
+            watch("unreadCnt", updateUnread);
         }],
         ["buddy-like-btn", (component, el) => {
             if (!component?.props?.totalLikeLimit) return;
