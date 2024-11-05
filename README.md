@@ -120,6 +120,13 @@ Hook `fetch` 函数，从而可以通过 `scriptio.wait("fetchHooksBefore")` 和
 
 查看转发的聊天记录中已知的和引用消息发送者 QQ，需要开启 LiteLoader Hook Vue。鼠标悬浮在头像/引用消息的发送者昵称上时显示 QQ 号，双击可复制。*关闭/打开需要重新进入聊天记录才能生效。*
 
+## [no-popup](./no-popup.js)
+
+阻止各类弹窗，目前已知：
+
+- 广告弹窗
+- 邮件弹窗
+
 ## [open-in-browser](./open-in-browser.js)
 
 小程序若可行则浏览器打开。
