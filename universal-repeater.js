@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Universal Repeater
-// @description  复读机，需要开启 LiteLoader Hook Vue
+// @description  消息复读机，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat
 // @reactive     true
 // @version      0.1.0
