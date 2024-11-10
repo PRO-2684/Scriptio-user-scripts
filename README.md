@@ -186,3 +186,13 @@ Hook `fetch` 函数，从而可以通过 `scriptio.wait("fetchHooksBefore")` 和
 ## [toast](./toast.js)
 
 允许其它脚本调用 scriptio.toast，需要开启 LiteLoader Hook Vue。
+
+## [universal-repeater](./universal-repeater.js)
+
+消息复读机，需要开启 LiteLoader Hook Vue，基于 [LiteLoaderQQNT-Echo-Message](https://github.com/WJZ-P/LiteLoaderQQNT-Echo-Message/) 修改而来。主要区别：
+
+- 通过 Hook Vue 实现，不再需要 `MutationObserver` 和 `setInterval`，性能更好
+- 使用 CSS 实现样式，不再需要 `mouse*` 事件
+- 基于 Scriptio 提供的动态监听特性，无需重载/重启即可实现功能开关
+
+请安装 [`transition.css`](https://github.com/PRO-2684/Transitio-user-css/#transition) 以实现过渡动画。
