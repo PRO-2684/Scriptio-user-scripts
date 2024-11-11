@@ -3,7 +3,7 @@
 // @description  消息复读机，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat
 // @reactive     true
-// @version      0.1.1
+// @version      0.1.3
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#repeater
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -87,10 +87,10 @@
                 border-radius: 50%;
                 border: 1px solid var(--on_bg_text);
                 padding: 0.25em;
-                display: none;
+                visibility: hidden;
             }
             &:hover .universal-repeater {
-                display: inline;
+                visibility: visible;
             }
         }`;
         document.head.appendChild(style);
