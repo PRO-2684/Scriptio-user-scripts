@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward, notice, group-essence, group-essence-share
 // @reactive     true
-// @version      0.3.8
+// @version      0.3.9
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -53,11 +53,12 @@
     }
     function setTip(el, tip) {
         const tipAttr = "inspectio-tip";
-        if (!el || !tip) return;
+        if (!el || !tip) return false;
         el.title = tip;
         if (el.hasAttribute(tipAttr)) return;
         el.addEventListener("click", clickHandler, { capture: true });
         el.toggleAttribute(tipAttr, true);
+        return true;
     }
     function formatFileSize(bytes) { // By Shapaper@126.com
         if (bytes === 0) return '0 Bytes';
@@ -653,7 +654,6 @@
                 if (label) {
                     const summary = el.querySelector(".summary-main") ?? el.querySelector(".recent-contact-abstract");
                     setTip(summary, label);
-                    console.log("updateAbstract", label);
                 }
             }
             function updateInfoOld() {
@@ -664,7 +664,6 @@
                 const title = name + optionalUin;
                 const info = el.querySelector(".main-info > span");
                 setTip(info, title);
-                console.log("updateInfoOld", title);
             }
             function updateInfo() {
                 const name = component?.proxy?.contactName;
@@ -673,7 +672,6 @@
                 const title = name + optionalUin;
                 const info = el.querySelector(".main-info > span");
                 setTip(info, title);
-                console.log("updateInfo", title);
             }
             function updateUnread() {
                 const cnt = component?.proxy?.unreadCnt;
@@ -683,7 +681,6 @@
                 } else {
                     bubble?.removeAttribute("title");
                 }
-                console.log("updateUnread", cnt);
             }
             function watch(attr, func) {
                 component.proxy.$watch(attr, func, { immediate: true, flush: "post" });

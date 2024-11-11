@@ -3,15 +3,25 @@
 // @description  消息复读机，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat
 // @reactive     true
-// @version      0.1.0
+// @version      0.1.1
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#repeater
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==
 
 (function () {
-    const log = console.log.bind(console, "[Repeater]");
+    const safeMode = true; // Only show on messages that can be forwarded
+    const debug = false;
+    const log = debug ? console.log.bind(console, "[Repeater]") : () => { };
     let enabled = false;
+    /**
+     * Repeat a message
+     * @param {string} msgId Message ID
+     * @param {object} contact Contact object
+     * @param {number} contact.chatType Chat type
+     * @param {string} contact.peerUid Peer UID
+     * @param {string} contact.guildId Guild ID
+     */
     function repeat(msgId, contact) {
         // Ref: https://github.com/WJZ-P/LiteLoaderQQNT-Echo-Message/
         window.scriptio.invokeNative("ns-ntApi", "nodeIKernelMsgService/forwardMsgWithComment", false, {
@@ -26,10 +36,25 @@
             log("Error forwarding message", err);
         });
     }
+    /**
+     * Check if a message can be forwarded
+     * @param {HTMLElement} el Message element
+     * @returns {boolean} Whether the message can be forwarded
+     */
+    function canForward(el) {
+        const container = el?.querySelector?.(".message-container");
+        const component = container?.__VUE__?.[0];
+        const supports = component?.ctx?.isSupportedForward;
+        return Boolean(supports);
+    }
+    /**
+     * Add repeat icon to message
+     * @param {object} component Vue component
+     */
     function addIcon(component) {
         const el = component?.vnode?.el;
         if (!el?.classList?.contains("message") || el?.hasAttribute("scale")) return;
-        if (!enabled) return;
+        if (!enabled || (safeMode && !canForward(el))) return;
         const { peerUid } = component.props.msgRecord;
         const { msgId, chatType } = component.props.msgRecord;
         const contact = { chatType, peerUid, guildId: "" };
@@ -65,7 +90,7 @@
                 display: none;
             }
             &:hover .universal-repeater {
-                display: block;
+                display: inline;
             }
         }`;
         document.head.appendChild(style);
