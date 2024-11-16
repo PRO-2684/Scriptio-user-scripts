@@ -3,7 +3,7 @@
 // @description  消息显示时间，鼠标悬停显示详细时间与消息序列号，双击复制时间戳，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward
 // @reactive     true
-// @version      0.2.1
+// @version      0.2.2
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#show-time
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -27,9 +27,14 @@
             timeEl.classList.add("message-time");
             timeEl.textContent = simpleTime;
             timeEl.title = fullTime + (seq ? `\n#${seq}` : "");
-            const parent = el.querySelector(".message-content__wrapper") || el.querySelector(".gray-tip-content.gray-tip-element");
-            const position = el.querySelector(".message-container--align-right") ? "afterbegin" : "beforeend";
-            parent?.insertAdjacentElement(position, timeEl);
+            const anchor = el.querySelector(".message-content__wrapper > .msg-content-container") ?? el.querySelector(".gray-tip-content.gray-tip-element");
+            const isGrayTip = anchor?.classList.contains("gray-tip-element");
+            const position = el.querySelector(".message-container--align-right") ? (
+                isGrayTip ? "afterbegin" : "beforebegin"
+            ) : (
+                isGrayTip ? "beforeend" : "afterend"
+            );
+            anchor?.insertAdjacentElement(position, timeEl);
             timeEl.addEventListener("dblclick", () => {
                 navigator?.clipboard?.writeText(String(timestamp));
             });
