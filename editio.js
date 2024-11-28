@@ -3,15 +3,16 @@
 // @description  给编辑器添加一些额外的功能
 // @run-at       main, chat
 // @reactive     true
-// @version      0.1.1
+// @version      0.1.2
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#editor-plus
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==
 
-(function () {
-    const debug = true;
+(async function () {
+    const debug = false;
     const log = debug ? console.log.bind(console, "[Editio]") : () => { };
+    const { scriptPath } = scriptio;
     // Use timer & Promise to wait for the editor to be ready
     const editorPromise = new Promise((resolve) => {
         const timer = setInterval(() => {
@@ -26,7 +27,8 @@
             }
         }, 500);
     });
-    if (debug) editorPromise.then(([_, editor]) => window.editor = editor); // Expose the editor to the global scope for debugging
+    const [editorElement, editor] = await editorPromise;
+    if (debug) window.editor = editor; // Expose the editor to the global scope for debugging
 
     // Paring brackets and quotes
     /**
@@ -46,12 +48,11 @@
      * Handle the InputEvent of type "insertText", so as to auto close brackets and quotes
      * @param {InputEvent} e The InputEvent.
      */
-    async function onInsertText(e) {
+    function onInsertText(e) {
         const other = pairs[e.data];
         if (other) {
             e.preventDefault();
             e.stopImmediatePropagation();
-            const [_, editor] = await editorPromise;
             editor.model.change(writer => {
                 for (const range of editor.model.document.selection.getRanges()) {
                     const { start, end } = range;
@@ -70,8 +71,7 @@
      * Handle the InputEvent of type "deleteContentBackward", so as to auto delete the adjacent right bracket or quote
      * @param {InputEvent} e The InputEvent.
      */
-    async function onBackspace(e) {
-        const [_, editor] = await editorPromise;
+    function onBackspace(e) {
         for (const range of editor.model.document.selection.getRanges()) {
             const { start, end } = range;
             if (start.isEqual(end) && !start.isAtStart && !start.isAtEnd) { // No selection and not on the edges
@@ -116,18 +116,14 @@
     function toggle(enabled) {
         if (enabled && !isEnabled) {
             log("Enabled");
-            editorPromise.then(([editorElement]) => {
-                editorElement.addEventListener("beforeinput", onInput, { capture: true });
-            });
+            editorElement.addEventListener("beforeinput", onInput, { capture: true });
         } else if (!enabled && isEnabled) {
             log("Disabled");
-            editorPromise.then(([editorElement]) => {
-                editorElement.removeEventListener("beforeinput", onInput, { capture: true });
-            });
+            editorElement.removeEventListener("beforeinput", onInput, { capture: true });
         }
         isEnabled = enabled;
     }
-    scriptio.listen(toggle, true);
+    scriptio.listen(toggle, { immediate: true, scriptPath });
 
     log("Initialized");
 })();
