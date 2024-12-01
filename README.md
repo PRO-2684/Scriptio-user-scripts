@@ -6,7 +6,22 @@
 
 给编辑器添加一些额外的功能：
 
-- 键入左侧符号时自动插入右侧符号，删除左侧符号时自动删除相邻的右侧符号。目前包括如下符号：`()`、`[]`、`{}`、`<>`、`""`、`''`、` `` `。
+- 匹配括号和引号
+    - 自动闭合括号和引号（类似于 VSCode 中的 [`editor.autoClosingBrackets`](https://pro-2684.github.io/?page=redirect&url=vscode%3A%2F%2Fsettings%2Feditor.autoClosingBrackets)）
+    - 删除相邻的闭合引号或括号（类似于 VSCode 中的 [`editor.autoClosingDelete`](https://pro-2684.github.io/?page=redirect&url=vscode%3A%2F%2Fsettings%2Feditor.autoClosingDelete)）
+    - 覆写闭合括号（类似于 VSCode 中的 [`editor.autoClosingOvertype`](https://pro-2684.github.io/?page=redirect&url=vscode%3A%2F%2Fsettings%2Feditor.autoClosingOvertype)）
+        - 输入字符是一个闭合字符且与光标后的字符相同
+        - 光标前的字符是相应的开放字符
+        - 对于具有相同开放和闭合字符的对子不起作用
+    - 跳转到匹配的括号
+        - 按 <kbd>Ctrl</kbd> + <kbd>Q</kbd> 跳转到匹配的括号
+        - 对于在边界的字符以及具有相同开放和闭合字符的对子不起作用
+    - 匹配的字符对：`()`、`[]`、`{}`、`<>`、`""`、`''`、` `` `。
+- Tab 键相关的功能
+    - 按下 (<kbd>Shift</kbd>+) <kbd>Tab</kbd> 来跳转至下一个 (或上一个) 所指定的字符 (与拓展 [`albert.TabOut`](https://pro-2684.github.io/?page=redirect&url=vscode%3Aextension%2Falbert.TabOut) 相似)
+    - 需要 Tab out 的字符：`` ()[]{}<>"'`,:;. ``
+
+你可能也喜欢 [Editio for Tampermonkey](https://greasyfork.org/scripts/519147)。
 
 ## [hitokoto](./hitokoto.js)
 
