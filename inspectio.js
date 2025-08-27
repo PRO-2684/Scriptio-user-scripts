@@ -3,14 +3,13 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward, notice, group-essence, group-essence-share
 // @reactive     true
-// @version      0.3.9
+// @version      0.4.0
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
 // ==/UserScript==
 
 (function () {
-    const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store.state;
     const MAXLEN = 100;
     let enabled = false;
     // Helper functions
@@ -135,7 +134,8 @@
             case 6: { // faceElement
                 const data = msgRecEl.faceElement;
                 const id = data.faceIndex;
-                const face = state.McEmojiStore?.qqEmojiMap?.[id];
+                const state = document.querySelector("#app").__vue_app__.config.globalProperties.$store?.state;
+                const face = state?.McEmojiStore?.qqEmojiMap?.[id];
                 let final = "";
                 if (face) {
                     const faceName = face?.name ?? face?.describe;
