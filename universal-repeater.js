@@ -3,7 +3,7 @@
 // @description  消息复读机，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat
 // @reactive     true
-// @version      0.1.3
+// @version      0.1.4
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#repeater
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -23,8 +23,8 @@
      * @param {string} contact.guildId Guild ID
      */
     function repeat(msgId, contact) {
-        // Ref: https://github.com/WJZ-P/LiteLoaderQQNT-Echo-Message/
-        window.scriptio.invokeNative("ns-ntApi", "nodeIKernelMsgService/forwardMsgWithComment", false, {
+        // Ref: https://github.com/WJZ-P/LiteLoaderQQNT-Echo-Message/blob/main/src/utils/rendererUtils.js#L265-L276
+        window.scriptio.invokeNative("ntApi", "nodeIKernelMsgService/forwardMsgWithComment", {
             msgIds: [msgId],
             msgAttributeInfos: new Map(),
             srcContact: contact,
@@ -55,8 +55,8 @@
         const el = component?.vnode?.el;
         if (!el?.classList?.contains("message") || el?.hasAttribute("scale")) return;
         if (!enabled || (safeMode && !canForward(el))) return;
-        const { peerUid } = component.props.msgRecord;
-        const { msgId, chatType } = component.props.msgRecord;
+        // LiteLoaderQQNT-Echo-Message uses `app.__vue_app__.config.globalProperties.$dt.pageManager.pageMap.pg_aio_pc.pageRoot.__VUE__[1].proxy.uid`
+        const { peerUid, msgId, chatType } = component.props.msgRecord; // FIXME: Maybe peerUin for private chats?
         const contact = { chatType, peerUid, guildId: "" };
         const icon = document.createElement("i");
         icon.classList.add("universal-repeater");
