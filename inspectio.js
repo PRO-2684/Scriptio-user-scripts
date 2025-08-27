@@ -3,7 +3,7 @@
 // @description  添加各类提示信息，Ctrl+Click 复制，功能细节详见 README，需要开启 LiteLoader Hook Vue
 // @run-at       main, chat, record, forward, notice, group-essence, group-essence-share
 // @reactive     true
-// @version      0.4.0
+// @version      0.4.1
 // @homepageURL  https://github.com/PRO-2684/Scriptio-user-scripts/#inspectio
 // @author       PRO_2684
 // @license      gpl-3.0
@@ -340,6 +340,10 @@
                         const title = truncate(detail?.title);
                         const desc = truncate(detail?.desc);
                         final = title && desc ? `[${title}] ${desc}` : data.prompt || "";
+                        const url = detail.qqdocurl;
+                        if (url) {
+                            altLink(url);
+                        }
                         break;
                     }
                     case "com.tencent.miniapp.lua": { // 小程序 2
@@ -716,7 +720,7 @@
         }],
         ["message-list", (component, el) => {
             const msgList = component?.proxy?.msgList;
-            const headers = el.querySelectorAll(".msg-list > .message-item > .message-item-container > .message-item-container-top > .message-item-container-top-info");
+            const headers = el.querySelectorAll(".message-item > .message-item-container > .message-item-container-top > .message-item-container-top-info");
             if (msgList.length !== headers.length || msgList.length === 0) return;
             function timeTip(timestampSeconds) {
                 const date = new Date(timestampSeconds * 1000);

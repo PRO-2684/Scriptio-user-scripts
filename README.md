@@ -150,6 +150,9 @@ Hook `fetch` 函数，从而可以通过 `scriptio.wait("fetchHooksBefore")` 和
 
 ## [open-in-browser](./open-in-browser.js)
 
+> [!WARNING]
+> 不再维护，请使用 [`inspectio`](#inspectio) 的 Alt+Click 功能。
+
 小程序若可行则浏览器打开。
 
 原理：
