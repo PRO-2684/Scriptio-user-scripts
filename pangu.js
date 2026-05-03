@@ -101,41 +101,48 @@
         return newText;
     }
 
-    const parser = new DOMParser();
-    let node;
-    function format(editorDom) {
-        const editor = editorDom.ckeditorInstance;
-        const doc = parser.parseFromString(editor.getData(), "text/html");
-        const iter = document.createNodeIterator(doc.documentElement, NodeFilter.SHOW_TEXT);
-        while (node = iter.nextNode()) {
-            node.nodeValue = spacing(node.nodeValue);
-        }
-        const newHtml = doc.documentElement.outerHTML;
-        const viewFragment = editor.data.processor.toView(newHtml);
-        const modelFragment = editor.data.toModel(viewFragment);
-        document.startViewTransition(() => {
-            editor.model.change(writer => {
-                const root = editor.model.document.getRoot();
-                writer.remove(writer.createRangeIn(root));
-                writer.insert(modelFragment, root);
-            });
+    function format(view) {
+        const { state, dispatch } = view;
+        const { doc, schema } = state;
+
+        let tr = state.tr;
+        let modified = false;
+        doc.descendants((node, pos) => {
+            if (node.isText) {
+                const oldText = node.text;
+                const newText = spacing(oldText);
+                if (oldText !== newText) {
+                    tr.insertText(newText, pos, pos + oldText.length);
+                    modified = true;
+                }
+            }
         });
+        if (!modified) return;
+        if (document.startViewTransition) {
+            document.startViewTransition(() => {
+                dispatch(tr);
+            });
+        } else {
+            dispatch(tr);
+        }
     }
 
     let listening = false;
-    function onKeyUp (e) {
+    function onKeyUp(e) {
         // 输入法下不触发
         if (e.isComposing || e.keyCode === 229) {
             return;
         }
-        const editorDom = document.querySelector(".ck.ck-content.ck-editor__editable");
-        if (!editorDom || document.activeElement !== editorDom) {
-            return;
-        }
+        const editorDom = document.querySelector(".qq-msg-editor");
+        const foucsDom = document.querySelector(".ProseMirror");
+        if (!editorDom || !foucsDom || document.activeElement !== foucsDom) return;
+        const proseMirrorInstance = editorDom.__VUE__[0].ctx.getEditor().editor;
+        if (!proseMirrorInstance) return;
         if (e.key === "p" && e.ctrlKey) {
-            format(editorDom);
+            format(proseMirrorInstance.view);
         }
     }
+
     function toggle(enabled) {
         if (enabled && !listening) {
             document.addEventListener("keyup", onKeyUp);
@@ -145,5 +152,5 @@
             listening = false;
         }
     }
-    scriptio.listen(toggle, true);
+    window.scriptio.listen(toggle, true);
 })();
