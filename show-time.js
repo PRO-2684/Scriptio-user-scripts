@@ -72,7 +72,7 @@
                     retry += 1;
                     requestAnimationFrame(placeTimeSpan);
                 } else {
-                    messageEl.insertAdjacentElement("beforeend", icon);
+                    messageEl.insertAdjacentElement("beforeend", timeEl);
                 }
             }
             placeTimeSpan();
